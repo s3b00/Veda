@@ -1,0 +1,21 @@
+{% extends 'main_template.html' %}
+{% load static %}
+
+{% block title%}
+    FAQ
+{% endblock %}
+
+{% block application %}
+    {% include 'borders_template.html' %}
+    <div id="faq">
+        <b-container>
+            <p>any text</p>
+        </b-container>
+    </div>
+{% endblock application %}
+
+{% block scripts %}
+    <script src="{% static 'navbar.js' %}"></script>
+    <script src="{% static 'faq.js' %}"></script>
+{% endblock scripts %}
+

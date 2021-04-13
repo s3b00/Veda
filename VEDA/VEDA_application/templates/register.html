@@ -1,0 +1,99 @@
+{% extends 'main_template.html' %}
+{% load static %}
+
+{% block title %}
+  Регистрация
+{% endblock %}
+
+{% block application %}
+  <div id=app class="container w-50 mt-5 p-5">
+    <div class="row justify-content-center align-items-center">
+      <b-form
+        method="POST" 
+        action="{% url 'register' %}">
+        <a href="{% url 'index' %}">
+          <b-img 
+            src="{% static 'logo.png' %}" 
+            class="mb-5" 
+            center fluid 
+            alt="VEDA LOGO" 
+            style="height: 100px;"></b-img>
+        </a>
+        <p>Основная информация</p>
+        <b-form-input 
+          type="email" 
+          v-model="email" 
+          name="email" 
+          placeholder="Электронная почта"
+          class=""></b-form-input>
+    
+        <b-form-input 
+            type="text" 
+            :state="validate_username"
+            v-model="username" 
+            name="username" 
+            placeholder="Уникальное имя пользователя"
+            class="mt-2"></b-form-input>
+        <b-form-invalid-feedback :state="validate_username">Имя должно быть длиннее четырех знаков.</b-form-invalid-feedback>
+        
+        <b-form-input 
+            type="text" 
+            v-model="password" 
+            :state="validate_password"
+            name="password" 
+            placeholder="Пароль"
+            class="mt-2"></b-form-input>
+        <b-form-invalid-feedback :state="validate_password">Минимум 8 символов для пароля.</b-form-invalid-feedback>
+
+        <b-form-input 
+            type="text" 
+            v-model="password_repeat" 
+            placeholder="Подтверждение пароля"
+            class="mt-2"></b-form-input>
+        <b-form-invalid-feedback :state="validate_repeat_password">Пароли не совпадают.</b-form-invalid-feedback>
+      
+        <p class="mt-4">Личная информация</p>
+        <b-form-input 
+            type="text"
+            v-model="firstname"
+            name="firstname"
+            placeholder="Имя"
+            class="mt-2 col-12 col-md-5"></b-form-input>
+        
+        <b-form-input 
+            type="text"
+            v-model="secondname"
+            :state="validate_name"
+            name="secondname"
+            placeholder="Фамилия"
+            class="mt-2 col-12 col-md-7"></b-form-input>
+        <b-form-invalid-feedback :state="validate_name">Поля личных данных не заполнены.</b-form-invalid-feedback>
+        
+        <b-form-input
+          type="date"
+          v-model="day_of_birthday"
+          :state="validate_dob"
+          placeholder="Дата рождения"
+          class="mt-2"></b-form-input>
+        <b-form-invalid-feedback :state="validate_dob"></b-form-invalid-feedback>
+        
+        <div class="row d-flex justify-content-around mt-4">
+          <b-button type="submit" pill variant="primary" size="sm" class="col-12 col-md-3 mr-4 mb-2 success-button">Создать аккаунт</b-button>
+          <b-button type="reset" pill variant="primary" size="sm" class="col-12 col-md-3 mr-4 mb-2 danger-button">Сбросить значения</b-button>
+          <b-button pill size="sm" @click="toLogin" variant="dark" class="col-12 col-md-5 mb-2 secondary-button">Войти в уже существующий аккаунт</b-button>  
+        </div>
+      </b-form>  
+    </div>  
+  </div>    
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'register.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <style>
+    <!-- body, html { height: 100%; background-color: #212529;} -->
+    #app {
+      background-color: whitesmoke;
+    }
+  </style>
+{% endblock %}
