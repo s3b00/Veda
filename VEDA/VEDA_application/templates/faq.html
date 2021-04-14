@@ -2,20 +2,34 @@
 {% load static %}
 
 {% block title%}
-    FAQ
+  FAQ
 {% endblock %}
 
 {% block application %}
-    {% include 'borders_template.html' %}
-    <div id="faq">
-        <b-container>
-            <p>any text</p>
-        </b-container>
-    </div>
+  {% include 'borders_template.html' %}
+  <div id="faq">
+    <b-container class="mt-5">
+      <div class="col-12 bg-light border rounded p-4">
+        <div>
+          <h2>FAQ</h2>
+          <p>Этот раздел создан с целью уточнения самых часто задаваемых вопросов к проекту и описывает принципы разделов сайта.</p>
+        </div>
+        <div class="mt-5">
+          <h3>Перечень часто задаваемых вопросов</h3>
+
+          <h4 class="mt-3">Для кого сделана VEDA?</h4>
+          <p class="text-justify">VEDA разработана для учащихся и их кураторов (классных руководителей) учебных учреждений с целью максимизации интеграции куратора и учеников в учебный процесс.  
+              Основой идей VEDA послужило отсутствие платформ, которые позволят в одном источнике сразу получать все последние актуальные события по месту обучения и процессов работы группы. 
+              Важной особенностью VEDA служит то, что помимо ведения стандартных учебных ведомостей (оценки, пропуски и т.д.), на VEDA можно отслеживать выполнение учебных задач, возложенных на участников группы.
+          </p>
+        </div>               
+      </div>
+    </b-container>
+  </div>
 {% endblock application %}
 
 {% block scripts %}
-    <script src="{% static 'navbar.js' %}"></script>
-    <script src="{% static 'faq.js' %}"></script>
+  <script src="{% static 'navbar.js' %}"></script>
+  <script src="{% static 'faq.js' %}"></script>
 {% endblock scripts %}
 

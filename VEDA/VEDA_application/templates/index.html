@@ -1,10 +1,86 @@
 {% extends 'main_template.html' %}
-{% block title %}
-    Основная страница
+{% load static %}
+
+{% block title%}
+  Основная страница
 {% endblock %}
 
 {% block application %}
-{% endblock %}
+  {% include 'borders_template.html' %}
+  <div id="index">
+    <b-container class="mt-5">
+      <b-row align-h="between">
+        <b-col cols="8" class="p-0">
+          {% for post in admin_posts %}
+            <div class="card card-outline-secondary mb-3">
+              <div class="card-header bg-blue text-light">
+                <h4>{{ post.article }}</h4>
+              </div>
+              <div class="card-body">
+                <p>{{ post.text }}</p>
+                <small class="text-muted">Опубликовано <a class="text-dark" href="#">{{ post.author }}</a>  {{ post.date_of_create }}</small>
+              </div>
+            </div>
+            <hr>  
+          {% endfor %}
+        </b-col>
+        <b-col cols="3" class="p-0">
+          <div class="card card-outline-secondary m-0">
+            <div class="card-header bg-dark text-light">
+              <h5>Инструменты</h5>
+            </div>
+            <div class="card-body">
+              <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action ">Создать группу</a>
+                <a class="list-group-item list-group-item-action" href="#">Фильтры</a>
+                {% if user.is_staff %}
+                  <a href="#" class="list-group-item list-group-item-action">Новый пост</a>
+                {% endif %}
+                <a href="#" class="list-group-item list-group-item-action">Моя ведомость</a>
+
+                <a href="#task-collapse" @click.prevent v-b-toggle class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                  Задачи {% if tasks %} <b-badge class="text-light bg-dark">{{ tasks|length }} </b-badge> {% endif %}
+                </a>
+                <b-collapse id="task-collapse">
+                  {% for task in tasks %}
+                    <b-card class="mt-2 small">
+                      {{ task.content }}
+                    </b-card>
+                  {% endfor %}
+                </b-collapse>
+
+                <a href="#notification-collapse" @click.prevent v-b-toggle class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                  Уведомления  {% if notifications %} <b-badge class="text-light bg-dark"> {{ notifications|length }} </b-badge> {% endif %}
+                </a>
+                <b-collapse id="notification-collapse">
+                    {% for notification in notifications %}
+                      <b-card class="mt-2 small">
+                        {{ notification.message }}
+                      </b-card>
+                    {% endfor %}
+                </b-collapse>
+                </div>
+            </div>
+          </div>
+          <div class="card card-outline-secondary mt-5">
+            <div class="card-header bg-dark text-light">
+              <h5>Группы</h5>
+            </div>
+            <div class="card-body">
+              <div class="list-group list-group-flush">
+                {% for group in groups %} 
+                  <a href="#" class="list-group-item list-group-item-action ">#{{ group.name }}</a>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </b-col>
+      </b-row>
+    </b-container>
+  </div>
+{% endblock application %}
 
 {% block scripts %}
-{% endblock %}
+  <script src="{% static 'navbar.js' %}"></script>
+  <script src="{% static 'index.js' %}"></script>
+{% endblock scripts %}

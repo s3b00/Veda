@@ -3,32 +3,32 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Template {% endblock %}</title>
-    <link type="text/css" rel="stylesheet" href="{% static 'bootstrap.min.css' %}" />
-    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Template {% endblock %}</title>
+  <link type="text/css" rel="stylesheet" href="{% static 'bootstrap.min.css' %}" />
+  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+  <link rel="stylesheet" href="{% static 'bg.css' %}">
 </head>
 <body>
-    {% block application %}
-      <div id="app"> 
-        {% for x in groups %}
-          <p>{{ x }}</p>
-        {% endfor %}
-        <b-button>Button</b-button>
-        <b-button variant="danger">Button</b-button>
-        <b-button variant="success">Button</b-button>
-        <b-button variant="outline-primary">Button</b-button>
-        new context
-        <p> [[ message ]] </p>
-      </div>
-    {% endblock %}
+  {% block application %}
+    <div id="app"> 
+      {% for x in groups %}
+        <p> {{ x }} </p>
+      {% endfor %}
+      <b-button>Button</b-button>
+      <b-button variant="danger">Button</b-button>
+      <b-button variant="success">Button</b-button>
+      <b-button variant="outline-primary">Button</b-button>
+      <p> [[ message ]] </p>
+    </div>
+  {% endblock %}
 
-    <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
-    <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
-    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
-    {% block scripts %} {% endblock %}
+  <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+  <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+  <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+  <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+  {% block scripts %} {% endblock %}
 </body>
 </html>

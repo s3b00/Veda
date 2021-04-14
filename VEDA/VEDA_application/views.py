@@ -13,7 +13,10 @@ def index(request):
 
     if request.method == 'GET':
         return render(request, 'index.html', context={
-
+            'admin_posts': models.Admin_post.objects.all(),
+            'groups': models.Group.objects.filter(listeners__user__username=request.user.username),
+            'notifications': models.Notification.objects.filter(receiver__user__username=request.user.username),
+            'tasks': models.Task.objects.filter(receiver__user__username=request.user.username)
         })
 
 

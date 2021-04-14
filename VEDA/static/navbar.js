@@ -1,10 +1,4 @@
-var bar = new Vue({
+var navbar = new Vue({
     delimiters: ['[[', ']]'],
     el: '#bar',
-    data: {
-        
-    },
-    methods: {
-        
-    }
 })

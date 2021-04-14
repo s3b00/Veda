@@ -1,4 +1,4 @@
-var application = new Vue({
+var login = new Vue({
     delimiters: ['[[', ']]'],
     el: '#app',
     data: {
@@ -13,5 +13,5 @@ var application = new Vue({
         toRegister(event) {
             window.location.href = '/registration'
         }
-    }
+    },
 })

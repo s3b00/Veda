@@ -9,6 +9,7 @@ class Parent(models.Model):
     """ Модель родителя предназначается для того, чтобы куратор
         имел доступ к данным об родителях пользователя группы """
 
+
     surname = models.CharField(max_length=30)       # Фамилия
     name = models.CharField(max_length=30)          # Имя
     middlename = models.CharField(max_length=30)    # Отчество
@@ -20,6 +21,7 @@ class Parent(models.Model):
 class Client(models.Model):
     """ Модель клиента расширяет возможности модели пользователя,
         появляется дополнительные поля родителей, статуса, хобби и тому подобное """
+
 
     def __str__(self):
         return self.user.username
@@ -50,6 +52,7 @@ class Client(models.Model):
     userpic = models.ImageField(upload_to='userpics', null=True)    # Аватар пользователя
 
 
+# Два метода ниже - позволяет создавать клиента сразу, когда меняется пользователь (основа клиента)
 @receiver(post_save, sender=User)
 def create_user_client(sender, instance, created, **kwargs):
     if created:
@@ -66,7 +69,8 @@ class Notification(models.Model):
         действия, которые могут его о чем-либо проинформировать
     """
 
-    reciever = models.ForeignKey(Client, on_delete=models.CASCADE)  # Получатель уведомления
+
+    receiver = models.ForeignKey(Client, on_delete=models.CASCADE)  # Получатель уведомления
     message = models.CharField(max_length=100)                      # Сообщение уведомления
     date_of_create = models.DateTimeField(auto_now_add=True)        # Дата и время создания уведомления
     priority = models.IntegerField(choices=(                        
@@ -89,6 +93,7 @@ class Group(models.Model):
     """ Модель группы предназначена для выполнения главной
         функции проекта - выделения учебных групп и их оформления
     """
+
 
     def __str__(self):
             return self.name
@@ -115,6 +120,7 @@ class Group_post(models.Model):
     """ Пост конкретной группы предназначен для оформления всех
         постов под конкретную группу в связке по таблице Group
     """
+
 
     def __str__(self):
         return self.group.name + " " + self.article
@@ -157,6 +163,7 @@ class Admin_post(models.Model):
 class Task(models.Model):
     """ Модель задач хранит сообщение для выполнения
         конкретному пользователю, закрепляется датой выполнения и статусом """
+
 
     def __str__(self):
             return self.group.name + " " + self.content

@@ -1,4 +1,4 @@
-var application = new Vue({
+var registration = new Vue({
     delimiters: ['[[', ']]'],
     el: '#app',
     data: {
@@ -34,5 +34,5 @@ var application = new Vue({
         validate_dob() {
             return this.day_of_birthday !== ''
         }
-    }
+    },
 })

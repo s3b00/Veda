@@ -1,0 +1,16 @@
+{% extends 'main_template.html' %}
+{% load static %}
+
+{% block title%}
+  Profile
+{% endblock %}
+
+{% block application %}
+  {% include 'borders_template.html' %}
+{% endblock application %}
+
+{% block scripts %}
+  <script src="{% static 'navbar.js' %}"></script>
+  <script src="{% static 'faq.js' %}"></script>
+{% endblock scripts %}
+
