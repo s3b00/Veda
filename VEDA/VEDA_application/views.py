@@ -1,5 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 from . import models
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, logout, login
+from django.urls import reverse
 
 def template(request):
     return render(request, 'main_template.html', context={
@@ -20,7 +23,16 @@ def index(request):
         })
 
 
-def login(request):
+def logout_view(request):
+    """ View для выхода из аккаунта авторизированного пользователя, в любом случае 
+        (даже если не авторизирован пользователь) - возвращает на основную страницу """
+
+
+    logout(request)
+    return HttpResponseRedirect(reverse('index'))
+
+
+def login_view(request):
     """ Страница входа в учетную запись пользователя, должна обрабатывать
         сохранение, вход и переходы на главную страницу, восстановление пароля
         и регистрацию пользователя """
@@ -29,6 +41,13 @@ def login(request):
         return render(request, 'login.html', context={
 
         })
+    if request.method == "POST":
+        user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            return HttpResponseRedirect(reverse('login'))
 
 
 def register(request):
@@ -39,6 +58,13 @@ def register(request):
         return render(request, 'register.html', context={
 
         })
+    if request.method == "POST":
+        user = User.objects.create_user(username=request.POST.get('username'), email=request.POST.get('email'), first_name=request.POST.get('firstname'), last_name=request.POST.get('secondname'), password=request.POST.get('password'))
+        user.client.hobbies = request.POST.get('hobbies')
+        user.client.day_of_birthday = request.POST.get('dob')
+        user.client.adress = request.POST.get('address')
+        user.client.status = ""
+        user.save()
     
 
 def profile(request):
@@ -61,13 +87,14 @@ def post(request):
         })
     
 
-def group(request):
+def group(request, pk):
     """ Страница, отображающая всю основную информацию о комнате группы, принимает POST,
         чтобы создать страницу группы, UPDATE для изменения данных """
 
     if request.method == "GET":
+        group = models.Group.objects.get(pk=pk)
         return render(request, 'group.html', context={
-
+            'group': group
         })
 
 

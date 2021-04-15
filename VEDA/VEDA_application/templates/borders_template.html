@@ -15,17 +15,21 @@
     
       <b-collapse id="navbar-toggle-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
+          <b-nav-item align="right" href="{% url 'faq' %}">
+            FAQ
+            <b-icon icon="question-circle" aria-hidden="true" ></b-icon>
+          </b-nav-item>
           {% if user.is_authenticated %}
             <b-nav-item align="right" href="#">
               Настройки
-              <b-icon icon="gear-fill" aria-hidden="true"></b-icon>
+              <b-icon icon="gear-fill" animation="spin" aria-hidden="true" ></b-icon>
             </b-nav-item>
-            <b-nav-item align="right" href="#">
+            <b-nav-item align="right" href="{% url 'logout' %}">
               Выход
               <b-icon icon="person-fill"></b-icon>
             </b-nav-item>
           {% else %}
-            <b-nav-item align="right" href="#">
+            <b-nav-item align="right" href="{% url 'login' %}">
               Вход
               <b-icon icon="person-fill"></b-icon>
             </b-nav-item>

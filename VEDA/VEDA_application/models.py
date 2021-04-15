@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.conf import settings
 from django.db import models
 from django.dispatch import receiver
+from django.urls import reverse
 
 
 class Parent(models.Model):
@@ -114,6 +115,9 @@ class Group(models.Model):
     shedule = models.FileField(upload_to='shedules')    # Расписание группы
     ratings =  models.FileField(upload_to='ratings')    # Оценки в группе
     sheet = models.FileField(upload_to='sheets')        # Вся ведомость по группе
+
+    def get_absolute_url(self):
+        return reverse('group', args=[str(self.id)])
 
 
 class Group_post(models.Model):

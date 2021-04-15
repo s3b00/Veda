@@ -9,6 +9,7 @@
   <div id=app class="container w-50 mt-5 p-5">
     <div class="row justify-content-center align-items-center">
       <b-form
+        @submit="onSubmit"
         method="POST" 
         action="{% url 'register' %}">
           <a href="{% url 'index' %}">
@@ -22,7 +23,7 @@
         <p>Основная информация</p>
         <b-form-input 
           type="email" 
-          v-model="email" 
+          v-model="form.email" 
           name="email" 
           placeholder="Электронная почта"
           class=""></b-form-input>
@@ -30,15 +31,15 @@
         <b-form-input 
             type="text" 
             :state="validate_username"
-            v-model="username" 
+            v-model="form.username" 
             name="username" 
             placeholder="Уникальное имя пользователя"
             class="mt-2"></b-form-input>
         <b-form-invalid-feedback :state="validate_username">Имя должно быть длиннее четырех знаков.</b-form-invalid-feedback>
         
         <b-form-input 
-            type="text" 
-            v-model="password" 
+            type="password" 
+            v-model="form.password" 
             :state="validate_password"
             name="password" 
             placeholder="Пароль"
@@ -46,8 +47,9 @@
         <b-form-invalid-feedback :state="validate_password">Минимум 8 символов для пароля.</b-form-invalid-feedback>
 
         <b-form-input 
-            type="text" 
-            v-model="password_repeat" 
+            type="password" 
+            v-model="form.password_repeat" 
+            :state="validate_repeat_password"
             placeholder="Подтверждение пароля"
             class="mt-2"></b-form-input>
         <b-form-invalid-feedback :state="validate_repeat_password">Пароли не совпадают.</b-form-invalid-feedback>
@@ -55,23 +57,39 @@
         <p class="mt-4">Личная информация</p>
         <b-form-input 
             type="text"
-            v-model="firstname"
+            v-model="form.firstname"
+            :state="validate_name"
             name="firstname"
             placeholder="Имя"
             class="mt-2 col-12 col-md-5"></b-form-input>
         
         <b-form-input 
             type="text"
-            v-model="secondname"
+            v-model="form.secondname"
             :state="validate_name"
             name="secondname"
             placeholder="Фамилия"
             class="mt-2 col-12 col-md-7"></b-form-input>
         <b-form-invalid-feedback :state="validate_name">Поля личных данных не заполнены.</b-form-invalid-feedback>
+
+         <b-form-input 
+            type="text"
+            v-model="form.hobbies"
+            name="hobbies"
+            placeholder="Ваши хобби"
+            class="mt-2 col-12 col-md-7"></b-form-input>
         
         <b-form-input
+          type="text"
+          v-model="form.address"
+          name="address"
+          placeholder="Адрес"
+          class="mt-2"></b-form-input>
+
+        <b-form-input
           type="date"
-          v-model="day_of_birthday"
+          v-model="form.day_of_birthday"
+          name="dob"
           :state="validate_dob"
           placeholder="Дата рождения"
           class="mt-2"></b-form-input>

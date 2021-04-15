@@ -2,13 +2,11 @@ var login = new Vue({
     delimiters: ['[[', ']]'],
     el: '#app',
     data: {
-        email: '',
+        username: '', 
         password: '',
     },
     methods: {
         onSubmit(event) {
-            event.preventDefault()
-            alert(JSON.stringify(this.data))
         },
         toRegister(event) {
             window.location.href = '/registration'

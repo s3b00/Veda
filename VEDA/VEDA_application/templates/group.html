@@ -7,10 +7,13 @@
 
 {% block application %}
   {% include 'borders_template.html' %}
+  <b-container id="group">
+    {{ group }}
+  </b-container>
 {% endblock application %}
 
 {% block scripts %}
   <script src="{% static 'navbar.js' %}"></script>
-  <script src="{% static 'faq.js' %}"></script>
+  <script src="{% static 'group.js' %}"></script>
 {% endblock scripts %}
 

@@ -11,18 +11,23 @@
     <b-container class="mt-5">
       <b-row align-h="between">
         <b-col cols="8" class="p-0">
-          {% for post in admin_posts %}
-            <div class="card card-outline-secondary mb-3">
-              <div class="card-header bg-blue text-light">
-                <h4>{{ post.article }}</h4>
-              </div>
-              <div class="card-body">
-                <p>{{ post.text }}</p>
-                <small class="text-muted">Опубликовано <a class="text-dark" href="#">{{ post.author }}</a>  {{ post.date_of_create }}</small>
-              </div>
-            </div>
-            <hr>  
-          {% endfor %}
+          <b-tabs  justified>
+            <b-tab title="Блог разработчика" active class="pt-3">
+              {% for post in admin_posts %}
+                <div class="card card-outline-secondary mb-3">
+                  <div class="card-header bg-blue text-light">
+                    <h4>{{ post.article }}</h4>
+                  </div>
+                  <div class="card-body">
+                    <p>{{ post.text }}</p>
+                    <small class="text-muted">Опубликовано <a class="text-dark" href="#">{{ post.author }}</a>  {{ post.date_of_create }}</small>
+                  </div>
+                </div>
+                <hr>  
+              {% endfor %}
+            </b-tab>
+            <b-tab title="Новости из групп" class="pt-3"><p>I'm the second tab</p></b-tab>
+          </b-tabs>
         </b-col>
         <b-col cols="3" class="p-0">
           <div class="card card-outline-secondary m-0">
@@ -69,7 +74,7 @@
             <div class="card-body">
               <div class="list-group list-group-flush">
                 {% for group in groups %} 
-                  <a href="#" class="list-group-item list-group-item-action ">#{{ group.name }}</a>
+                  <a href="{% url 'group' group.id %}" class="list-group-item list-group-item-action ">#{{ group.name }}</a>
                 {% endfor %}
               </div>
             </div>
