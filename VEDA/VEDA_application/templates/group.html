@@ -27,8 +27,13 @@
             <h5>Участники</h5>
           </div>
           <div class="card-body">
-            <div class="list-group list-group-flush">
-              {{ group.listeners }}
+            <div class="d-flex">
+              {% for listener in listeners%}
+                <div class="d-flex flex-column">
+                  <b-avatar href="{% url 'profile' listener.id %}" src="{{ listener.userpic.url }}"></b-avatar>
+                  {{  listener.user.username }}
+                </div>                
+              {% endfor %}
             </div>
           </div>
         </div>
@@ -54,11 +59,45 @@
             <h5>Расписание</h5>
           </div>
           <div class="card-body">
-            <div class="list-group list-group-flush">
-              <a class="list-group-item list-group-item-action small" v-for="item in items">[[ item ]]</a>
-            </div>
+            <b-tabs small vertical justified>
+              <b-tab title="Понедельник" active>
+                
+              </b-tab>
+
+              <b-tab title="Вторник">
+                
+              </b-tab>
+
+              <b-tab title="Среда">
+                <div class="list-group list-group-flush">
+                  <a class="list-group-item list-group-item-action small" v-for="item in items">[[ item ]]</a>
+                </div>
+              </b-tab>
+
+              <b-tab title="Четверг">
+                
+              </b-tab>
+
+              <b-tab title="Пятница">
+                
+              </b-tab>
+
+              <b-tab title="Суббота">
+                
+              </b-tab>
+
+              <b-tab title="Воскресенье">
+                
+              </b-tab>
+            </b-tabs>
           </div>
         </div>
+        {% if not user.client in listeners %}
+          <b-button class="btn w-100 btn-dark my-2">
+            Войти
+          </b-button>
+        {% endif %}
+     
         <div class="card card-outline-secondary m-0 mt-4">
           <div class="card-header bg-blue text-light">
             <h5>Задачи</h5>

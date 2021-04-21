@@ -26,7 +26,21 @@
                 <hr>  
               {% endfor %}
             </b-tab>
-            <b-tab title="Новости из групп" class="pt-3"><p>I'm the second tab</p></b-tab>
+            <b-tab title="Новости из групп" class="pt-3">
+              {% for post in group_posts %}
+                <div class="card card-outline-secondary mb-3">
+                  <div class="card-header bg-blue text-light d-flex justify-content-between flex-column">
+                    <h4 >{{ post.article }}</h4>
+                  </div>
+                  <div class="card-body">
+                    <p>{{ post.text }}</p>
+                    <small class="text-muted">Опубликовано <a class="text-dark" href="#">{{ post.author }}</a>  {{ post.date_of_create }} в группе <a href="{% url 'group' post.group.id %}" class="text-dark">{{ post.group }}</a>
+                    </small>
+                  </div>
+                </div>
+                <hr>  
+              {% endfor %}
+            </b-tab>
           </b-tabs>
         </b-col>
         <b-col cols="3" class="p-0">
@@ -89,6 +103,7 @@
       @hidden="resetModal"
       @ok="handleOk">
       <b-form ref="form" @submit="handleSubmit">
+      
         <b-form-group
           label="Заголовок"
           label-for="article"

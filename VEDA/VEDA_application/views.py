@@ -18,8 +18,9 @@ def index(request):
         return render(request, 'index.html', context={
             'admin_posts': models.Admin_post.objects.all(),
             'groups': models.Group.objects.filter(listeners__user__username=request.user.username),
+            'group_posts': models.Group_post.objects.filter(group__listeners__user__username=request.user.username),
             'notifications': models.Notification.objects.filter(receiver__user__username=request.user.username),
-            'tasks': models.Task.objects.filter(receiver__user__username=request.user.username)
+            'tasks': models.Task.objects.filter(receiver__user__username=request.user.username) 
         })
 
 
@@ -73,8 +74,11 @@ def profile(request, pk):
 
     if request.method == "GET":
         client = get_object_or_404(models.Client, pk=pk)
+        groups = models.Group.objects.filter(listeners__user__username=client.user.username)
+
         return render(request, 'profile.html', context={
-            'client': client
+            'client': client,
+            'groups': groups
         })
 
 
@@ -87,7 +91,7 @@ def post(request):
 
         })
     if request.method == "POST":
-        print(request.POST.get('article'))
+        print(request.body)
 
         return HttpResponseRedirect(reverse('index'))  
 
@@ -97,10 +101,11 @@ def group(request, pk):
         чтобы создать страницу группы, UPDATE для изменения данных """
 
     if request.method == "GET":
-        
         group = get_object_or_404(models.Group, pk=pk)
+
         return render(request, 'group.html', context={
             'group': group,
+            'listeners': group.listeners.all(),
             'notises': models.Notice.objects.filter(group__id=group.id),
             'tasks': models.Task.objects.filter(group__id=group.id),
             'posts': models.Group_post.objects.filter(group__id=group.id),

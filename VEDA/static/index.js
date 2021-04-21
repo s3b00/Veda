@@ -37,6 +37,9 @@ let index = new Vue({
       
       let request = fetch('/post', {
         method: "POST",
+        headers: {  
+          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
+        },  
         body: {'article': this.article, 'content': this.content}
       })
 

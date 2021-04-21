@@ -1,6 +1,11 @@
 from django.contrib import admin
 from django.urls import path, re_path, include
+
 from . import views
+from VEDA import settings
+
+from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     re_path('^login$', views.login_view, name="login"),               # страница авторизации
@@ -12,5 +17,8 @@ urlpatterns = [
     re_path('^faq$', views.faq, name="faq"),                          # страница о проекте и ответы на вопросы
     re_path('^profile/(?P<pk>\d+?)$', views.profile, name="profile"), # страница конкретного пользователя
     re_path('^post$', views.post, name="post"),                       # урл создания поста админа
-    re_path('', views.index, name="index")                            # главная страница
+    path('', views.index, name="index")                            # главная страница
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += staticfiles_urlpatterns()
