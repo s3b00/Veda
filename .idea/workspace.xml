@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09f64343-4b55-4143-ae93-e5dc0e5882b7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/VEDA/VEDA_application/templates/temp.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/VEDA/VEDA_application/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/VEDA/VEDA_application/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VEDA/VEDA_application/templates/borders_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/VEDA/VEDA_application/templates/borders_template.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VEDA/VEDA_application/templates/group.html" beforeDir="false" afterPath="$PROJECT_DIR$/VEDA/VEDA_application/templates/group.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VEDA/VEDA_application/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/VEDA/VEDA_application/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/VEDA/VEDA_application/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/VEDA/VEDA_application/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/VEDA/VEDA_application/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/VEDA/VEDA_application/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VEDA/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/VEDA/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VEDA/static/group.js" beforeDir="false" afterPath="$PROJECT_DIR$/VEDA/static/group.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VEDA/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/VEDA/static/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +30,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="09f64343-4b55-4143-ae93-e5dc0e5882b7" name="Default Changelist" comment="" />
@@ -44,5 +51,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

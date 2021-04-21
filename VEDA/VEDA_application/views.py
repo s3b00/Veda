@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from . import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
@@ -67,13 +67,14 @@ def register(request):
         user.save()
     
 
-def profile(request):
+def profile(request, pk):
     """ Отдает страницу профиля, и, в случае, если это профиль пользователя, то может принять
         UPDATE запрос на изменение данных профиля """
 
     if request.method == "GET":
+        client = get_object_or_404(models.Client, pk=pk)
         return render(request, 'profile.html', context={
-
+            'client': client
         })
 
 
@@ -85,16 +86,24 @@ def post(request):
         return render(request, 'post.html', context={
 
         })
-    
+    if request.method == "POST":
+        print(request.POST.get('article'))
+
+        return HttpResponseRedirect(reverse('index'))  
+
 
 def group(request, pk):
     """ Страница, отображающая всю основную информацию о комнате группы, принимает POST,
         чтобы создать страницу группы, UPDATE для изменения данных """
 
     if request.method == "GET":
-        group = models.Group.objects.get(pk=pk)
+        
+        group = get_object_or_404(models.Group, pk=pk)
         return render(request, 'group.html', context={
-            'group': group
+            'group': group,
+            'notises': models.Notice.objects.filter(group__id=group.id),
+            'tasks': models.Task.objects.filter(group__id=group.id),
+            'posts': models.Group_post.objects.filter(group__id=group.id),
         })
 
 
@@ -103,6 +112,15 @@ def faq(request):
 
     if request.method == "GET":
         return render(request, 'faq.html', context={
+
+        })
+
+
+def settings(request):
+    """ Страница просмотра и изменения настроек пользователя """
+
+    if request.method == "GET":
+        return render(request, 'settings.html', context={
 
         })
 

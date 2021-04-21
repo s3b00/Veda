@@ -7,8 +7,70 @@
 
 {% block application %}
   {% include 'borders_template.html' %}
-  <b-container id="group">
-    {{ group }}
+  <b-container id="group" class="mt-5">
+    <b-row>
+      <b-col cols=9>
+        <div class="card card-outline-secondary m-0">
+          <div class="card-header bg-dark text-light">
+            <h5>Объявления</h5>
+          </div>
+          <div class="card-body">
+            <div class="list-group list-group-flush">
+              {% for notice in notices %}
+                <a href="#" class="list-group-item list-group-item-action ">{{ notice }}</a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="card card-outline-secondary m-0 mt-4">
+          <div class="card-header bg-dark text-light">
+            <h5>Участники</h5>
+          </div>
+          <div class="card-body">
+            <div class="list-group list-group-flush">
+              {{ group.listeners }}
+            </div>
+          </div>
+        </div>
+        <div class="mt-4">
+          {% for post in posts %}
+            <div class="card card-outline-secondary mb-3">
+              <div class="card-header bg-dark text-light">
+                <h5>{{ post.article }}</h5>
+              </div>
+              <div class="card-body">
+                <p>{{ post.text }}</p>
+                <small class="text-muted">Опубликовано <a class="text-dark" href="{% url 'profile' post.author.id %}">{{ post.author }}</a>  {{ post.date_of_create }}</small>
+              </div>
+            </div>
+            <hr>  
+          {% endfor %}
+        </div>
+      </b-col>
+
+      <b-col cols=3>
+        <div class="card card-outline-secondary m-0">
+          <div class="card-header text-light bg-blue">
+            <h5>Расписание</h5>
+          </div>
+          <div class="card-body">
+            <div class="list-group list-group-flush">
+              <a class="list-group-item list-group-item-action small" v-for="item in items">[[ item ]]</a>
+            </div>
+          </div>
+        </div>
+        <div class="card card-outline-secondary m-0 mt-4">
+          <div class="card-header bg-blue text-light">
+            <h5>Задачи</h5>
+          </div>
+          <div class="card-body">
+            <div class="list-group list-group-flush">
+              тут будут задачи ученикам
+            </div>
+          </div>
+        </div>
+      </b-col>
+    </b-row>
   </b-container>
 {% endblock application %}
 

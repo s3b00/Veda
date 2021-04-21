@@ -172,6 +172,7 @@ class Task(models.Model):
     def __str__(self):
             return self.group.name + " " + self.content
 
+
     group = models.ForeignKey(
         Group,
         on_delete=models.CASCADE,
@@ -194,3 +195,24 @@ class Task(models.Model):
         0. Не выполнена
         1. Выполнена 
     """
+
+class Notice(models.Model):
+    """ Модель для объявлений, которые делают модераторы в группах """
+
+    def __str__(self):
+        return self.message
+
+
+    group = models.ForeignKey(
+        Group,
+        on_delete=models.CASCADE,
+    ) # Группа для объявления
+
+    author = models.ForeignKey(
+        Client,
+        on_delete=models.SET_NULL,
+        null=True
+    ) # Автор объявления (среди модераторов) 
+
+    message = models.CharField(max_length=250)                      # Содержание объявления
+    date_of_create = models.DateTimeField(auto_now_add=True)        # Дата публикации

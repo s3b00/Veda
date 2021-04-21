@@ -39,7 +39,7 @@
                 <a href="#" class="list-group-item list-group-item-action ">Создать группу</a>
                 <a class="list-group-item list-group-item-action" href="#">Фильтры</a>
                 {% if user.is_staff %}
-                  <a href="#" class="list-group-item list-group-item-action">Новый пост</a>
+                  <a href="#" class="list-group-item list-group-item-action" v-b-modal.new-post>Новый пост</a>
                 {% endif %}
                 <a href="#" class="list-group-item list-group-item-action">Моя ведомость</a>
 
@@ -58,11 +58,12 @@
                   Уведомления  {% if notifications %} <b-badge class="text-light bg-dark"> {{ notifications|length }} </b-badge> {% endif %}
                 </a>
                 <b-collapse id="notification-collapse">
-                    {% for notification in notifications %}
-                      <b-card class="mt-2 small">
-                        {{ notification.message }}
-                      </b-card>
-                    {% endfor %}
+                  {% for notification in notifications %}
+                    <b-card class="mt-2 small ">
+                      <b-notification notificationId="{{ notification.id }}" message="{{ notification.message }}">
+                      </b-notification>
+                    </b-card>
+                  {% endfor %}
                 </b-collapse>
                 </div>
             </div>
@@ -82,6 +83,37 @@
         </b-col>
       </b-row>
     </b-container>
+    <b-modal 
+      id="new-post"
+      @show="resetModal"
+      @hidden="resetModal"
+      @ok="handleOk">
+      <b-form ref="form" @submit="handleSubmit">
+        <b-form-group
+          label="Заголовок"
+          label-for="article"
+          invalid-feedback="Введите заголовок"
+          :state="articleState">
+          <b-form-input
+            id="article"
+            v-model="article"
+            required></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          label="Содержание"
+          label-for="content"
+          invalid-feedback="Введите содержание поста"
+          :state="contentState">
+          <b-form-textarea
+            id="content"
+            v-model="content"
+            rows="4"
+            placeholder="Сообщите всем о чем то важном!"
+            required></b-form-textarea>
+        </b-form-group>
+      </b-form>
+    </b-modal>
   </div>
 {% endblock application %}
 
