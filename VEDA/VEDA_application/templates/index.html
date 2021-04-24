@@ -9,8 +9,8 @@
   {% include 'borders_template.html' %}
   <div id="index">
     <b-container class="mt-5">
-      <b-row align-h="between">
-        <b-col cols="8" class="p-0">
+      <b-row align-h="between" class="d-flex flex-column-reverse flex-md-row">
+        <b-col cols="12" md=6 lg=8 class="p-0 mt-md-0 mt-3">
           <b-tabs  justified>
             <b-tab title="Блог разработчика" active class="pt-3">
               {% for post in admin_posts %}
@@ -43,8 +43,23 @@
             </b-tab>
           </b-tabs>
         </b-col>
-        <b-col cols="3" class="p-0">
-          <div class="card card-outline-secondary m-0">
+
+        <b-col cols="12" md=5 lg=3 class="p-0">
+          <div class="card card-outline-secondary mt-5">
+            <div class="card-body d-flex flex-row align-items-center justify-content-around">
+              <div class="flex-column">
+                <b-avatar href="{% url 'profile' user.client.id %}" src="{{ user.client.userpic.url }}" size="lg"></b-avatar>
+                <small> @{{ user.username }} </small>
+              </div>
+              <div class="list-group small list-group-flush">
+                <p class="list-group-item m-0 p-0">{{ user.last_name }} {{ user.first_name }}</p>
+                <p class="list-group-item m-0 mt-1 p-0">{{ user.client.day_of_birthday }}</p>
+                <small class="list-group-item m-0 mt-1 p-0">{{ user.client.status }}</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="card card-outline-secondary m-0 mt-2">
             <div class="card-header bg-dark text-light">
               <h5>Инструменты</h5>
             </div>
