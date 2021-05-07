@@ -1,15 +1,15 @@
 let notification = Vue.component('b-notification', {
-  // camelCase in JavaScript
-  props: ['notificationId', 'message'],
+  props: ['id', 'message'],
   data: {
-      id: this.notificationId
+    visible: true
   },
   methods: {
-    exitNotification(event) {
-      alert(this.id)
+    exitNotification() {
+      fetch(`/notification/${this.id}`)
+      this.visible = false
     }
   },
-  template: '<div class="d-flex justify-content-between align-items-center"> <span> {{ message }}  </span> <b-icon-x-diamond-fill @click="exitNotification"></b-icon-x-diamond-fill> </div>'
+  template: '<div v-if="visible" class="d-flex justify-content-between align-items-center"> <span> {{ message }} </span> <b-icon-x-circle @click="exitNotification"></b-icon-x-circle> </div>'
 })
 
 let index = new Vue({
@@ -17,35 +17,25 @@ let index = new Vue({
   el: '#index',
   methods: { 
     checkFormValidity() {
-      const valid = this.$refs.form.checkValidity()
-      this.articleState = valid
-      this.contentState = valid
-      console.log(this.articleState, this.contentState)
-      return valid
+      this.articleValid = this.article.length > 0 
+      this.contentValid = this.content.length > 0 
+
+      return this.articleValid & this.contentValid
     },
     resetModal(){
       this.article = ''
-      this.articleState = null
+      this.articleValid = null
 
       this.content = ''
-      this.contentState = null
+      this.contentValid = null
     },
     handleSubmit(event) {
       if (!this.checkFormValidity()) {
         return
       }
-      
-      let request = fetch('/post', {
-        method: "POST",
-        headers: {  
-          "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
-        },  
-        body: {'article': this.article, 'content': this.content}
-      })
 
-      this.$nextTick(() => {
-        this.$bvModal.hide('modal-prevent-closing')
-      })
+      const form = document.getElementById('form-data')
+      form.submit()
     },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault()
@@ -59,8 +49,8 @@ let index = new Vue({
   data: {
     article: '',
     content: '',
-    articleState: null,
-    contentState: null
+    articleValid: null,
+    contentValid: null
   }
 })
 

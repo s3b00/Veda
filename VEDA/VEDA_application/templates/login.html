@@ -8,7 +8,7 @@
 {% block application %}
   <div id="app" class="container w-50 mt-5 p-5">
     <div class="row justify-content-center align-items-center">
-      <b-form @submit="onSubmit" method="POST" action="{% url 'login' %}">
+      <b-form @submit="onSubmit" method="POST" action="{% url 'login' %}" ref="loginForm">
         <a href="{% url 'index' %}">
           <b-img 
             src="{% static 'logo.png' %}" 
@@ -17,20 +17,30 @@
             alt="VEDA LOGO" 
             style="height: 100px;"></b-img>
         </a>
+        {% if error %}
+          <b-alert variant="warning" show>Ошибка в логине или пароле!</b-alert>
+        {% endif %}
         <p>Основная информация</p>
         <b-form-input 
             type="text" 
             v-model="username" 
+            invalid-feedback="Введите username!"
+            :state="usernameValid"
             name="username" 
             placeholder="Имя пользователя"
             class="mt-2"></b-form-input> 
       
-        <b-form-input 
+        <b-form-group
+        invalid-feedback="Введите пароль!"
+        :state="passwordValid">
+          <b-form-input 
           type="password" 
           v-model="password" 
           name="password" 
           placeholder="Пароль"
           class="mt-2"></b-form-input>
+        </b-form-group>
+        
         
         <b-link href="{% url 'recover' %}" class='mt-2'>Восстановить пароль</b-link>
         <div class="row d-flex justify-content-around mt-4">

@@ -1,0 +1,180 @@
+{% extends 'main_template.html' %}
+{% load static %}
+
+{% block title%}
+  Создание комнаты
+{% endblock %}
+
+{% block application %}
+  {% include 'borders_template.html' %}
+  <div id="create_group" class="container mt-5">
+    <b-card no-body>
+      <b-row>
+        <b-col cols="4">
+          <b-list-group v-b-scrollspy:listgroup-ex>
+            <b-list-group-item variant=dark href="#list-item-1">Основная информация</b-list-group-item>
+            <b-list-group-item variant=dark href="#list-item-2">Расписание</b-list-group-item>
+            <b-list-group-item variant=dark href="#list-item-3">Дополнительные настройки</b-list-group-item>
+          </b-list-group>
+        </b-col>
+  
+        <b-col cols="8">
+          <div id="listgroup-ex" style="position:relative; overflow-y:auto; height:80vh;">
+            <h1 id="list-item-1"
+            class="mt-3">Основная информация</h1>
+
+            <b-form class="mt-3">
+              <b-form-group 
+                label="Название группы"
+                label-for="name-input">
+                <b-form-input
+                  id="name-input"
+                  v-model="generalForm.name"
+                  placeholder="Моя любимая группа"></b-form-input>
+              </b-form-group>
+  
+              <b-form-group 
+                label="Уникальный идентификатор группы"
+                label-for="tag-input"
+                class="mt-3">
+                <b-form-input
+                  id="tag-input"
+                  v-model="generalForm.tag"
+                  placeholder="unicGroup"></b-form-input>
+              </b-form-group>
+
+              <h1 id="list-item-2"
+                class="mt-4">Расписание занятий</h1>
+
+              <h3>Понедельник</h3>
+              <b-list-group class="my-2">
+                <b-list-group-item v-for="discipline in generalForm.mo">[[ discipline ]]</b-list-group-item>
+              </b-list-group>
+              <b-row>
+                <b-col sm="9">
+                  <b-form-input
+                  id="mo-input"
+                  v-model="moEdit"></b-form-input>
+                </b-col>
+              
+                <b-col sm="3">
+                  <b-button @click="addMo" class="bg-blue">Добавить занятие</b-button>
+                </b-col>
+              </b-row>      
+              
+              <h3 class="my-3">Вторник</h3>
+              <b-list-group class="my-2">
+                <b-list-group-item v-for="discipline in generalForm.tu">[[ discipline ]]</b-list-group-item>
+              </b-list-group>
+              <b-row>
+                <b-col sm="9">
+                  <b-form-input
+                  id="tu-input"
+                  v-model="tuEdit"></b-form-input>
+                </b-col>
+              
+                <b-col sm="3">
+                  <b-button @click="addTu" class="bg-blue">Добавить занятие</b-button>
+                </b-col>
+              </b-row>    
+              
+              <h3 class="my-3">Среда</h3>
+              <b-list-group class="my-2">
+                <b-list-group-item v-for="discipline in generalForm.we">[[ discipline ]]</b-list-group-item>
+              </b-list-group>
+              <b-row>
+                <b-col sm="9">
+                  <b-form-input
+                  id="we-input"
+                  v-model="weEdit"></b-form-input>
+                </b-col>
+              
+                <b-col sm="3">
+                  <b-button @click="addWe" class="bg-blue">Добавить занятие</b-button>
+                </b-col>
+              </b-row>   
+
+              <h3 class="my-3">Четверг</h3>
+              <b-list-group class="my-2">
+                <b-list-group-item v-for="discipline in generalForm.th">[[ discipline ]]</b-list-group-item>
+              </b-list-group>
+              <b-row>
+                <b-col sm="9">
+                  <b-form-input
+                  id="th-input"
+                  v-model="thEdit"></b-form-input>
+                </b-col>
+              
+                <b-col sm="3">
+                  <b-button @click="addTh" class="bg-blue">Добавить занятие</b-button>
+                </b-col>
+              </b-row>   
+
+              <h3 class="my-3">Пятница</h3>
+              <b-list-group class="my-2">
+                <b-list-group-item v-for="discipline in generalForm.fr">[[ discipline ]]</b-list-group-item>
+              </b-list-group>
+              <b-row>
+                <b-col sm="9">
+                  <b-form-input
+                  id="fr-input"
+                  v-model="frEdit"></b-form-input>
+                </b-col>
+              
+                <b-col sm="3">
+                  <b-button @click="addFr" class="bg-blue">Добавить занятие</b-button>
+                </b-col>
+              </b-row>   
+
+              <h3 class="my-3">Суббота</h3>
+              <b-list-group class="my-2">
+                <b-list-group-item v-for="discipline in generalForm.sa">[[ discipline ]]</b-list-group-item>
+              </b-list-group>
+              <b-row>
+                <b-col sm="9">
+                  <b-form-input
+                  id="sa-input"
+                  v-model="saEdit"></b-form-input>
+                </b-col>
+              
+                <b-col sm="3">
+                  <b-button @click="addSa" class="bg-blue">Добавить занятие</b-button>
+                </b-col>
+              </b-row>   
+
+              <h3 class="my-3">Воскресенье</h3>
+              <b-list-group class="my-2">
+                <b-list-group-item v-for="discipline in generalForm.su">[[ discipline ]]</b-list-group-item>
+              </b-list-group>
+              <b-row>
+                <b-col sm="9">
+                  <b-form-input
+                  id="su-input"
+                  v-model="suEdit"></b-form-input>
+                </b-col>
+              
+                <b-col sm="3">
+                  <b-button @click="addSu" class="bg-blue">Добавить занятие</b-button>
+                </b-col>
+              </b-row>  
+              
+              <h1 id="list-item-3"
+              class="mt-4">Дополнительные настройки</h1>
+              
+              <div class="d-flex justify-content-around align-items-center mt-4">
+                <b-button type="submit" class="w-50" variant="dark">Создать группу</b-button>
+                <b-button type="reset" class="bg-blue w-25">Сбросить</b-button>
+              </div>
+            </b-form>           
+          </div>
+        </b-col>
+      </b-row>
+    </b-card>
+  </div>
+{% endblock application %}
+
+{% block scripts %}
+  <script src="{% static 'navbar.js' %}"></script>
+  <script src="{% static 'create_group.js' %}"></script>
+{% endblock scripts %}
+

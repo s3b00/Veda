@@ -3,6 +3,7 @@ from . import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 from django.urls import reverse
+from VEDA_application.models import Admin_post, Notification
 
 def template(request):
     return render(request, 'main_template.html', context={
@@ -17,10 +18,10 @@ def index(request):
     if request.method == 'GET':
         return render(request, 'index.html', context={
             'admin_posts': models.Admin_post.objects.all(),
-            'groups': models.Group.objects.filter(listeners__user__username=request.user.username),
-            'group_posts': models.Group_post.objects.filter(group__listeners__user__username=request.user.username),
-            'notifications': models.Notification.objects.filter(receiver__user__username=request.user.username),
-            'tasks': models.Task.objects.filter(receiver__user__username=request.user.username) 
+            'groups': models.Group.objects.filter(listeners__user__username=request.user.username),                     # группы, где есть текущий пользователь
+            'group_posts': models.Group_post.objects.filter(group__listeners__user__username=request.user.username),    # посты в группах, в которых находится пользователь
+            'notifications': models.Notification.objects.filter(receiver__user__username=request.user.username),        # уведомления для пользователя
+            'tasks': models.Task.objects.filter(receiver__user__username=request.user.username)                         # задачи из группа для пользователя
         })
 
 
@@ -46,9 +47,12 @@ def login_view(request):
         user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
         if user is not None:
             login(request, user)
+            print('here')
             return HttpResponseRedirect(reverse('index'))
         else:
-            return HttpResponseRedirect(reverse('login'))
+            return render(request, 'login.html', context={
+                'error': True
+        })
 
 
 def register(request):
@@ -60,7 +64,12 @@ def register(request):
 
         })
     if request.method == "POST":
-        user = User.objects.create_user(username=request.POST.get('username'), email=request.POST.get('email'), first_name=request.POST.get('firstname'), last_name=request.POST.get('secondname'), password=request.POST.get('password'))
+        user = User.objects.create_user(username=request.POST.get('username'), 
+            email=request.POST.get('email'), 
+            first_name=request.POST.get('firstname'), 
+            last_name=request.POST.get('secondname'), 
+            password=request.POST.get('password'))
+            
         user.client.hobbies = request.POST.get('hobbies')
         user.client.day_of_birthday = request.POST.get('dob')
         user.client.adress = request.POST.get('address')
@@ -91,8 +100,9 @@ def post(request):
 
         })
     if request.method == "POST":
-        print(request.body)
-
+        if request.user.is_staff:
+            newPost = Admin_post(author=request.user.client, article=request.POST.get('article'), text=request.POST.get('content'))
+            newPost.save()
         return HttpResponseRedirect(reverse('index'))  
 
 
@@ -137,3 +147,20 @@ def recover(request):
         return render(request, 'recover.html', context={
 
         })
+
+def create_group(request):
+    """ Страница создания комнаты группы """
+
+    if request.method == "GET":
+        return render(request, 'create_group.html', context={
+
+        })
+
+
+def remove_notification(request, pk):
+    """ Вьюшка для удаления уведомления """
+
+    if request.method == "GET":
+        notification = get_object_or_404(Notification, pk=pk)
+        notification.delete()
+        return HttpResponseRedirect(reverse('index'))  

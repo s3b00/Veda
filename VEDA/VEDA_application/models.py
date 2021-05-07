@@ -50,6 +50,11 @@ class Client(models.Model):
     hobbies = models.CharField(max_length=100)                      # Поле хобби (используется куратором и отображается в профиле)
     day_of_birthday = models.DateField(null=True)                   # Поле дня рождения (используется куратором и отображается в профиле)
     adress = models.CharField(max_length=50)                        # Поле адреса (используется только куратором и не виден в профиле)
+    gender = models.CharField(choices=(
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other')
+    ), max_length=50, null=True)
     userpic = models.ImageField(upload_to='userpics', null=True)    # Аватар пользователя
 
 
@@ -129,6 +134,9 @@ class Group_post(models.Model):
     def __str__(self):
         return self.group.name + " " + self.article
 
+    class Meta():
+        ordering = ['-date_of_create']
+
     group = models.ForeignKey(
         Group, 
         on_delete=models.CASCADE
@@ -152,6 +160,9 @@ class Admin_post(models.Model):
 
     def __str__(self):
             return self.author.user.username + " " + self.article
+
+    class Meta():
+        ordering = ['-date_of_create']
 
     author = models.ForeignKey(
         Client,
