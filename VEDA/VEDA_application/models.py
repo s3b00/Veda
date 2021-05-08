@@ -55,7 +55,7 @@ class Client(models.Model):
         ('F', 'Female'),
         ('O', 'Other')
     ), max_length=50, null=True)
-    userpic = models.ImageField(upload_to='userpics', null=True)    # Аватар пользователя
+    userpic = models.ImageField(upload_to='userpics', null=True, default="default.png")    # Аватар пользователя
 
 
 # Два метода ниже - позволяет создавать клиента сразу, когда меняется пользователь (основа клиента)

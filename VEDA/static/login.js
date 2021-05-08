@@ -16,8 +16,8 @@ var login = new Vue({
             return this.usernameValid & this.passwordValid
         },
         onSubmit(event) {
-            if (this.validateData) {
-                this.$ref.loginForm.submit()
+            if (this.validateData()) {
+                return true
             } else {
                 event.preventDefault()
             }

@@ -8,7 +8,7 @@
 {% block application %}
   <div id="app" class="container w-50 mt-5 p-5">
     <div class="row justify-content-center align-items-center">
-      <b-form @submit="onSubmit" method="POST" action="{% url 'login' %}" ref="loginForm">
+      <b-form @submit="onSubmit" method="POST" action="{% url 'login' %}">
         <a href="{% url 'index' %}">
           <b-img 
             src="{% static 'logo.png' %}" 
@@ -24,18 +24,15 @@
         <b-form-input 
             type="text" 
             v-model="username" 
-            invalid-feedback="Введите username!"
             :state="usernameValid"
             name="username" 
             placeholder="Имя пользователя"
             class="mt-2"></b-form-input> 
       
-        <b-form-group
-        invalid-feedback="Введите пароль!"
-        :state="passwordValid">
-          <b-form-input 
+        <b-form-input 
           type="password" 
           v-model="password" 
+          :state="passwordValid"
           name="password" 
           placeholder="Пароль"
           class="mt-2"></b-form-input>

@@ -3,31 +3,33 @@ var registration = new Vue({
   el: '#app',
   data: {
     form: {
-    username: '',
-    firstname: '',
-    secondname: '',
-    hobbies: '',
-    email: '',
-    address: '',
-    password: '',
-    password_repeat: '',
-    day_of_birthday: ''
-    }       
+      username: '',
+      firstname: '',
+      secondname: '',
+      hobbies: '',
+      email: '',
+      address: '',
+      gender: null,
+      password: '',
+      password_repeat: '',
+      day_of_birthday: ''
+    },
+    genderValid: null
   },
   methods: {
     onSubmit(event) {
-      console.log(this.validate_username())
-      // if (validate_username() && validate_name() && validate_password() && validate_repeat_password() && validate_dob()) {
-      //     return true
-      // }
-
-      // // event.preventDefault()
-      // alert(JSON.stringify(this.form))
-
-      event.preventDefault()
+      if (this.validate_username & this.validate_name 
+        & this.validate_password & this.validate_dob) {
+          return true
+      } else {
+        event.preventDefault()
+      }
     },
     toLogin(event) {
       window.location.href = '/login'
+    },
+    validateGender() {
+      this.genderValid = this.form.gender === "F" | this.form.gender === "M" | this.form.gender === "O"
     }
   },
   computed: {

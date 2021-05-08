@@ -47,7 +47,6 @@ def login_view(request):
         user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
         if user is not None:
             login(request, user)
-            print('here')
             return HttpResponseRedirect(reverse('index'))
         else:
             return render(request, 'login.html', context={
@@ -64,17 +63,28 @@ def register(request):
 
         })
     if request.method == "POST":
-        user = User.objects.create_user(username=request.POST.get('username'), 
-            email=request.POST.get('email'), 
-            first_name=request.POST.get('firstname'), 
-            last_name=request.POST.get('secondname'), 
-            password=request.POST.get('password'))
-            
-        user.client.hobbies = request.POST.get('hobbies')
-        user.client.day_of_birthday = request.POST.get('dob')
-        user.client.adress = request.POST.get('address')
-        user.client.status = ""
-        user.save()
+        try:
+            user = User.objects.create_user(username=request.POST.get('username'), 
+                email=request.POST.get('email'), 
+                first_name=request.POST.get('firstname'), 
+                last_name=request.POST.get('secondname'), 
+                password=request.POST.get('password'))
+                
+            user.client.hobbies = request.POST.get('hobbies')
+            user.client.day_of_birthday = request.POST.get('dob')
+            user.client.adress = request.POST.get('address')
+            user.client.gender = request.POST.get('gender')
+            user.client.status = ""
+
+            user.save()
+
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect(reverse('index'))
+        except Exception as e:
+            return render(request, 'register.html', context={
+                'error': e
+            })
     
 
 def profile(request, pk):

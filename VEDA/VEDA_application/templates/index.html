@@ -53,6 +53,7 @@
               <div class="card-body d-flex flex-row align-items-center justify-content-around">
                 <div class="flex-column">
                   <b-avatar href="{% url 'profile' user.client.id %}" src="{{ user.client.userpic.url }}" size="lg"></b-avatar>
+                  <br>
                   <small> @{{ user.username }} </small>
                 </div>
                 <div class="list-group small list-group-flush">
