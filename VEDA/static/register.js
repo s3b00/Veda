@@ -19,7 +19,7 @@ var registration = new Vue({
   methods: {
     onSubmit(event) {
       if (this.validate_username & this.validate_name 
-        & this.validate_password & this.validate_dob) {
+        & this.validate_password & this.validate_repeat_password & this.validate_dob) {
           return true
       } else {
         event.preventDefault()

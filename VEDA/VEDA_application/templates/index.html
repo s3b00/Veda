@@ -83,20 +83,21 @@
                   </a>
                   <b-collapse id="task-collapse">
                     {% for task in tasks %}
-                      <b-card class="mt-2 small">
-                        {{ task.content }}
+                      <b-card class="my-2">
+                        <b-card-body class="d-flex p-0 m-0 small text-dark justify-content-between">
+                          {{ task.content }} 
+                          <b-icon icon="dot" scale=2 variant="{% if task.status == 0 %}danger{% else %}success{% endif %}"></b-icon>
+                        </b-card-body>
                       </b-card>
                     {% endfor %}
                   </b-collapse>
 
                   <a href="#notification-collapse" @click.prevent v-b-toggle class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                    Уведомления  {% if notifications %} <b-badge class="text-light bg-dark"> {{ notifications|length }} </b-badge> {% endif %}
+                    Уведомления  {% if notifications %} <b-badge class="text-light bg-dark"> ! </b-badge> {% endif %}
                   </a>
                   <b-collapse id="notification-collapse">
                     {% for notification in notifications %}
-                      <b-card class="mt-2 small ">
-                        <b-notification id="{{ notification.id }}" message="{{ notification.message }}" />
-                      </b-card>
+                      <b-notification id="{{ notification.id }}" message="{{ notification.message }}" />
                     {% endfor %}
                   </b-collapse>
                   </div>
@@ -108,7 +109,10 @@
               </div>
               <div class="card-body">
                 <div class="list-group list-group-flush">
-                  {% for group in groups %} 
+                  {% for group in m_groups %} 
+                    <a href="{% url 'group' group.id %}" class="list-group-item list-group-item-action ">#{{ group.name }}</a>
+                  {% endfor %}
+                  {% for group in l_groups %} 
                     <a href="{% url 'group' group.id %}" class="list-group-item list-group-item-action ">#{{ group.name }}</a>
                   {% endfor %}
                 </div>

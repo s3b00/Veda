@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from . import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from VEDA_application.models import Admin_post, Notification
 
@@ -18,7 +19,8 @@ def index(request):
     if request.method == 'GET':
         return render(request, 'index.html', context={
             'admin_posts': models.Admin_post.objects.all(),
-            'groups': models.Group.objects.filter(listeners__user__username=request.user.username),                     # группы, где есть текущий пользователь
+            'l_groups': models.Group.objects.filter(listeners__user__username=request.user.username),                     # группы, где есть текущий пользователь
+            'm_groups': models.Group.objects.filter(moderators__user__username=request.user.username),                     # группы, где есть текущий пользователь
             'group_posts': models.Group_post.objects.filter(group__listeners__user__username=request.user.username),    # посты в группах, в которых находится пользователь
             'notifications': models.Notification.objects.filter(receiver__user__username=request.user.username),        # уведомления для пользователя
             'tasks': models.Task.objects.filter(receiver__user__username=request.user.username)                         # задачи из группа для пользователя
@@ -126,7 +128,8 @@ def group(request, pk):
         return render(request, 'group.html', context={
             'group': group,
             'listeners': group.listeners.all(),
-            'notises': models.Notice.objects.filter(group__id=group.id),
+            'moderators': group.moderators.all(),
+            'notices': models.Notice.objects.filter(group__id=group.id),
             'tasks': models.Task.objects.filter(group__id=group.id),
             'posts': models.Group_post.objects.filter(group__id=group.id),
         })
@@ -158,6 +161,7 @@ def recover(request):
 
         })
 
+
 def create_group(request):
     """ Страница создания комнаты группы """
 
@@ -167,6 +171,7 @@ def create_group(request):
         })
 
 
+@login_required
 def remove_notification(request, pk):
     """ Вьюшка для удаления уведомления """
 
@@ -174,3 +179,15 @@ def remove_notification(request, pk):
         notification = get_object_or_404(Notification, pk=pk)
         notification.delete()
         return HttpResponseRedirect(reverse('index'))  
+
+
+@login_required
+def add_notice(request, pk):
+    """ Вьюшка для удаления уведомления """
+
+    if request.method == "POST":
+        group = get_object_or_404(models.Group, pk=pk)
+        notice = models.Notice(group=group, author=request.user.client, message=request.POST.get('message'))
+        notice.save()
+
+        return HttpResponseRedirect(reverse('group', args=[group.id]))  

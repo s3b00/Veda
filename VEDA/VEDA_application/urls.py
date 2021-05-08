@@ -19,6 +19,7 @@ urlpatterns = [
     re_path('^profile/(?P<pk>\d+?)$', views.profile, name="profile"), # страница конкретного пользователя
     re_path('^post$', views.post, name="post"),                       # урл создания поста админа
     re_path('^notification/(?P<pk>\d+?)$', views.remove_notification, name="remove_notification"),                       # урл создания поста админа
+    re_path('^notice/(?P<pk>\d+?)$', views.add_notice, name="add_notice"),                                               # урл создания объявления в группе
     path('', views.index, name="index")                            # главная страница
 ]
 

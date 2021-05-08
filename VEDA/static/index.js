@@ -1,15 +1,19 @@
 let notification = Vue.component('b-notification', {
   props: ['id', 'message'],
-  data: {
+  data: () => ({
     visible: true
-  },
+  }),
   methods: {
     exitNotification() {
       fetch(`/notification/${this.id}`)
       this.visible = false
     }
   },
-  template: '<div v-if="visible" class="d-flex justify-content-between align-items-center"> <span> {{ message }} </span> <b-icon-x-circle @click="exitNotification"></b-icon-x-circle> </div>'
+  template: '<b-card v-if="visible" class="mt-2 small"> \
+    <div class="d-flex justify-content-between align-items-center"> \
+      <span> {{ message }} </span> <b-icon-x-circle @click="exitNotification"></b-icon-x-circle> \
+    </div> \
+  </b-card>'
 })
 
 let index = new Vue({
