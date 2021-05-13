@@ -1,3 +1,4 @@
+from django.core.checks import messages
 from django.dispatch.dispatcher import receiver
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from . import models
@@ -136,7 +137,54 @@ def group(request, pk):
             'notices': models.Notice.objects.filter(group__id=group.id),
             'tasks': models.Task.objects.filter(group__id=group.id),
             'posts': models.Group_post.objects.filter(group__id=group.id),
+            'sheet': models.Lesson.objects.filter(group__id=group.id)
         })
+
+
+def group_enter(request, pk):
+    """ Вью для входа в группу конкретного пользователя в группу под РК """
+
+    if request.method == "POST":
+        group = get_object_or_404(Group, pk=pk)
+
+        group.listeners.add(request.user.client)
+        group.save()
+
+        moderators = group.moderators.all()
+
+        for moderator in moderators:
+            notification = Notification.objects.create(
+                receiver = moderator,
+                message = f'@{request.user.username} зашел в группу #{group.name}',
+                priority = 2
+            )
+
+        return HttpResponseRedirect(reverse('index'))
+
+
+def group_out(request, pk):
+    """ Вью для выхода пользователя из группы """
+
+    if request.method == "POST":
+        group = get_object_or_404(Group, pk=pk)
+        
+        if request.user.client in group.listeners.all():
+            group.listeners.remove(request.user.client)
+        elif request.user.client in group.moderators.all():
+            group.moderators.remove(request.user.client)
+        
+        group.save()
+
+        moderators = group.moderators.all()
+
+        for moderator in moderators:
+            notification = Notification.objects.create(
+                receiver = moderator,
+                message = f'@{request.user.username} вышел из группы #{group.name}',
+                priority = 2
+            )
+
+        return HttpResponseRedirect(reverse('index'))
 
 
 def faq(request):

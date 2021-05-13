@@ -9,7 +9,7 @@
   {% include 'borders_template.html' %}
   <b-container id="group" class="mt-5">
     <b-row>
-      <b-col cols=9>
+      <b-col cols=8>
         <div class="card card-outline-secondary m-0">
           <div class="card-header bg-dark text-light">
             <h5>Объявления</h5>
@@ -74,7 +74,7 @@
         </div>
       </b-col>
 
-      <b-col cols=3>
+      <b-col cols=4>
         <div class="card card-outline-secondary m-0">
           <div class="card-header text-light bg-blue">
             <h5>Расписание</h5>
@@ -82,45 +82,90 @@
           <div class="card-body">
             <b-tabs small vertical justified>
               <b-tab text="dark" title="Понедельник" active>
-                
+                <div class="list-group list-group-flush">
+                  {% for x in sheet %}
+                    {% if x.day == 1 %}
+                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                    {% endif %}
+                  {% endfor %}
+                </div>
               </b-tab>
 
               <b-tab text="dark" title="Вторник">
-                
+                <div class="list-group list-group-flush">
+                  {% for x in sheet %}
+                    {% if x.day == 2 %}
+                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                    {% endif %}
+                  {% endfor %}
+                </div>
               </b-tab>
 
               <b-tab text="dark" title="Среда">
                 <div class="list-group list-group-flush">
-                  <a class="list-group-item list-group-item-action small" v-for="item in items">[[ item ]]</a>
+                  {% for x in sheet %}
+                    {% if x.day == 4 %}
+                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                    {% endif %}
+                  {% endfor %}
                 </div>
               </b-tab>
 
               <b-tab text="dark" title="Четверг">
-                
+                <div class="list-group list-group-flush">
+                  {% for x in sheet %}
+                    {% if x.day == 5 %}
+                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                    {% endif %}
+                  {% endfor %}
+                </div>
               </b-tab>
 
               <b-tab text="dark" title="Пятница">
-                
+                <div class="list-group list-group-flush">
+                  {% for x in sheet %}
+                    {% if x.day == 5 %}
+                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                    {% endif %}
+                  {% endfor %}
+                </div>
               </b-tab>
 
               <b-tab text="dark" title="Суббота">
-                
+                <div class="list-group list-group-flush">
+                  {% for x in sheet %}
+                    {% if x.day == 6 %}
+                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                    {% endif %}
+                  {% endfor %}
+                </div>
               </b-tab>
 
               <b-tab text="dark" title="Воскресенье">
-                
+                <div class="list-group list-group-flush">
+                  {% for x in sheet %}
+                    {% if x.day == 7 %}
+                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                    {% endif %}
+                  {% endfor %}
+                </div>
               </b-tab>
             </b-tabs>
           </div>
         </div>
         {% if not user.client in listeners and not user.client in moderators %}
-          <b-button class="btn w-100 btn-dark my-2">
-            Войти
-          </b-button>
+          <b-form method="POST" action="{% url 'group_enter' group.id %}">
+            <b-button type="submit" class="btn w-100 btn-dark my-2">
+              Войти
+            </b-button>
+          </b-form>
+         
         {% else %}
-          <b-button class="btn w-100 btn-dark my-2">
-            Выйти
-          </b-button>
+          <b-form method="POST" action="{% url 'group_out' group.id %}">
+            <b-button class="btn w-100 btn-dark my-2" type="submit">
+              Выйти
+            </b-button>
+          </b-form>
         {% endif %}
      
         <div class="card card-outline-secondary m-0 mt-4">

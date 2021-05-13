@@ -81,7 +81,6 @@ var profilePage = new Vue({
           event.preventDefault()
 
           let formBody = JSON.stringify(this.generalForm)
-          alert(formBody)
           
           fetch('/group_create', {
             method: "POST",
@@ -91,7 +90,7 @@ var profilePage = new Vue({
             body: formBody
           })
 
-          window.location.href('/')
+          document.location.href = '/'
         },
       },
 })

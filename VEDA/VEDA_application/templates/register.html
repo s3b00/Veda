@@ -24,22 +24,28 @@
             style="height: 100px;"></b-img>
         </a>
         <p>Основная информация</p>
-        <b-form-input 
+        <b-form-input-group>
+          <b-form-input 
           type="email" 
           v-model="form.email" 
+          :state="validate_email"
           name="email" 
           placeholder="Электронная почта"
           class=""></b-form-input>
-    
-        <b-form-input 
-            type="text" 
-            :state="validate_username"
-            v-model="form.username" 
-            name="username" 
-            placeholder="Уникальное имя пользователя"
-            class="mt-2"></b-form-input>
-        <b-form-invalid-feedback :state="validate_username">Имя должно быть длиннее четырех знаков.</b-form-invalid-feedback>
-        
+          <b-form-invalid-feedback :state="validate_email">Введите почту.</b-form-invalid-feedback>
+        </b-form-input-group>
+       
+        <b-form-input-group>
+          <b-form-input 
+          type="text" 
+          :state="validate_username"
+          v-model="form.username" 
+          name="username" 
+          placeholder="Уникальное имя пользователя"
+          class="mt-2"></b-form-input>
+          <b-form-invalid-feedback :state="validate_username">Имя должно быть длиннее четырех знаков.</b-form-invalid-feedback>
+        </b-form-input-group>
+       
         <b-form-input 
             type="password" 
             v-model="form.password" 
@@ -89,11 +95,12 @@
           placeholder="Адрес"
           class="mt-2"></b-form-input>
 
-        <b-form-select 
-          v-model="form.selected" 
+        <b-form-input-group>
+          <b-form-select 
+          v-model="form.gender" 
           size="lg" 
           class="mt-2 w-100"
-          :state="validateGender">
+          :state="validate_gender">
           <template #first>
             <b-form-select-option :value="null" selected disabled>Выберите пол</b-form-select-option>
           </template>
@@ -101,8 +108,11 @@
           <b-form-select-option value="M">Мужчина</b-form-select-option>
           <b-form-select-option value="F">Женщина</b-form-select-option>
           <b-form-select-option value="O">Другое</b-form-select-option>
-        </b-form-select>
-        <input type="hidden" v-model="form.selected" name="gender"> </input>
+          </b-form-select>
+          <input type="hidden" v-model="form.selected" name="gender"> </input>
+        <b-form-invalid-feedback :state="validate_gender">Выберите пол.</b-form-invalid-feedback>
+        </b-form-input-group>
+       
 
         <b-form-datepicker
           type="date"
