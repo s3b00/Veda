@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils import tree
 
 
 class Parent(models.Model):
@@ -117,12 +118,36 @@ class Group(models.Model):
     ) # Количество подписчиков не ограничено, связаны внешней таблицей с Client
 
     name = models.CharField(max_length=40)              # Название группы
-    shedule = models.FileField(upload_to='shedules')    # Расписание группы
-    ratings =  models.FileField(upload_to='ratings')    # Оценки в группе
-    sheet = models.FileField(upload_to='sheets')        # Вся ведомость по группе
+    tag = models.CharField(max_length=40, null=True)              # Тег для поиска
+
 
     def get_absolute_url(self):
         return reverse('group', args=[str(self.id)])
+
+
+class Lesson(models.Model):
+    """ Модель для загрузки расписания группы """
+
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    day = models.IntegerField(choices=(
+        (1, 'Monday'),
+        (2, 'Tuesday'),
+        (3, 'Wednesday'),
+        (4, 'Thursday'),
+        (5, 'Friday'),
+        (6, 'Saturday'),
+        (7, 'Sunday'),
+    ), blank=False, null=False)
+    discipline = models.CharField(max_length=40, null=False, blank=False)
+
+
+class Note(models.Model):
+    """ Модель для записей результатов учащихся в группе """
+
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
+    receiver = models.OneToOneField(Client, on_delete=models.CASCADE)
+    date_of_receive = models.DateField(blank=False, null=False)
+    value = models.CharField(max_length=10, blank=True)
 
 
 class Group_post(models.Model):

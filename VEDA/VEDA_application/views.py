@@ -1,10 +1,13 @@
+from django.dispatch.dispatcher import receiver
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from . import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from VEDA_application.models import Admin_post, Notification
+from VEDA_application.models import Admin_post, Group, Lesson, Notification
+
+import json
 
 def template(request):
     return render(request, 'main_template.html', context={
@@ -84,6 +87,7 @@ def register(request):
                 login(request, user)
                 return HttpResponseRedirect(reverse('index'))
         except Exception as e:
+            print(e)
             return render(request, 'register.html', context={
                 'error': e
             })
@@ -162,6 +166,7 @@ def recover(request):
         })
 
 
+@login_required
 def create_group(request):
     """ Страница создания комнаты группы """
 
@@ -169,6 +174,87 @@ def create_group(request):
         return render(request, 'create_group.html', context={
 
         })
+    elif request.method == "POST":
+        data = json.loads(request.body)
+
+        group = Group.objects.create(
+            name = data['name'],
+            tag = data['tag'],
+        )
+
+        group.moderators.add(request.user.client)
+        group.save()
+
+        notification = Notification.objects.create(
+            receiver=request.user.client,
+            message=f'Вы создали группу {group.name}',
+            priority=2
+        )
+
+        for lmo in data['mo']:
+            lesson = Lesson(
+                group=group,
+                discipline=lmo,
+                day=1,
+            )
+            
+            lesson.save()
+        
+        for lt in data['tu']:
+            lesson = Lesson(
+                group=group,
+                discipline=lt,
+                day=2
+            )
+            
+            lesson.save()
+
+        for lwe in data['we']:
+            lesson = Lesson(
+                group=group,
+                discipline=lwe,
+                day=3
+            )
+            
+            lesson.save()
+   
+        for lth in data['th']:
+            lesson = Lesson(
+                group=group,
+                discipline=lth,
+                day=4
+            )
+            
+            lesson.save()
+        
+        for lfr in data['fr']:
+            lesson = Lesson(
+                group=group,
+                discipline=lfr,
+                day=5
+            )
+            
+            lesson.save()
+
+        for lsa in data['sa']:
+            lesson = Lesson(
+                group=group,
+                discipline=lsa,
+                day=6
+            )
+            
+            lesson.save()
+        
+        for lsu in data['su']:
+            lesson = Lesson(
+                group=group,
+                discipline=lsu,
+                day=7
+            )
+            
+            lesson.save()
+
+        return HttpResponseRedirect(reverse('create_group'))
 
 
 @login_required

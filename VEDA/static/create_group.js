@@ -77,5 +77,21 @@ var profilePage = new Vue({
 
           }        
         },
+        onSubmit(event) {
+          event.preventDefault()
+
+          let formBody = JSON.stringify(this.generalForm)
+          alert(formBody)
+          
+          fetch('/group_create', {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: formBody
+          })
+
+          window.location.href('/')
+        },
       },
 })
