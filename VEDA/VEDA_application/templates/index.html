@@ -28,7 +28,20 @@
             </b-tab>
             {% if user.is_authenticated %}
               <b-tab title="Новости из групп" class="pt-3">
-                {% for post in group_posts %}
+                {% for post in group_posts_moderator %}
+                  <div class="card card-outline-secondary mb-3">
+                    <div class="card-header bg-blue text-light d-flex justify-content-between flex-column">
+                      <h4 >{{ post.article }}</h4>
+                    </div>
+                    <div class="card-body">
+                      <p>{{ post.text }}</p>
+                      <small class="text-muted">Опубликовано <a class="text-dark" href="#">{{ post.author }}</a>  {{ post.date_of_create }} в группе <a href="{% url 'group' post.group.id %}" class="text-dark">{{ post.group }}</a>
+                      </small>
+                    </div>
+                  </div>
+                  <hr>  
+                {% endfor %}
+                {% for post in group_posts_listener %}
                   <div class="card card-outline-secondary mb-3">
                     <div class="card-header bg-blue text-light d-flex justify-content-between flex-column">
                       <h4 >{{ post.article }}</h4>

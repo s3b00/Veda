@@ -176,6 +176,7 @@ class Group_post(models.Model):
     article = models.CharField(max_length=50)                   # Заголовок поста
     text = models.TextField()                                   # Сообщение поста, неограниченное количество знаков
     date_of_create = models.DateTimeField(auto_now_add=True)    # Дата и время публикации поста
+    file = models.FileField(null=True, upload_to='files'),      # Файл приложение к посту
 
 
 class Admin_post(models.Model):

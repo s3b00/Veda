@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from VEDA_application.models import Admin_post, Group, Lesson, Notification
+from VEDA_application.models import Admin_post, Group, Group_post, Lesson, Notice, Notification
 
 import json
 
@@ -25,7 +25,8 @@ def index(request):
             'admin_posts': models.Admin_post.objects.all(),
             'l_groups': models.Group.objects.filter(listeners__user__username=request.user.username),                     # группы, где есть текущий пользователь
             'm_groups': models.Group.objects.filter(moderators__user__username=request.user.username),                     # группы, где есть текущий пользователь
-            'group_posts': models.Group_post.objects.filter(group__listeners__user__username=request.user.username),    # посты в группах, в которых находится пользователь
+            'group_posts_listener': models.Group_post.objects.filter(group__listeners__user__username=request.user.username),    # посты в группах, в которых находится пользователь
+            'group_posts_moderator': models.Group_post.objects.filter(group__moderators__user__username=request.user.username),    # посты в группах, в которых находится пользователь
             'notifications': models.Notification.objects.filter(receiver__user__username=request.user.username),        # уведомления для пользователя
             'tasks': models.Task.objects.filter(receiver__user__username=request.user.username)                         # задачи из группа для пользователя
         })
@@ -187,6 +188,42 @@ def group_out(request, pk):
         return HttpResponseRedirect(reverse('index'))
 
 
+def group_post(request, pk):
+    """ Вью для создания постов в группе """
+
+    if request.method == "POST":
+        group = get_object_or_404(Group, pk=pk)
+
+        group_post = Group_post.objects.create(
+            group = group,
+            article = request.POST.get('article'),
+            text = request.POST.get('text'),
+            author = request.user.client,
+        )
+
+        if request.FILES['file']:
+            file = request.FILES['file']
+            group_post.file.save()
+            group_post.save()
+
+        for listener in group.listeners.all():
+            notification = Notification.objects.create(
+                receiver = listener,
+                message = f'В группе #{group.name} новый пост!',
+                priority = 4
+            )
+        
+        for moderator in group.moderators.all():
+            notification = Notification.objects.create(
+                receiver = moderator,
+                message = f'В группе #{group.name} новый пост!',
+                priority = 4
+            )
+        
+        return HttpResponseRedirect(reverse('group', args=[pk]))
+
+
+
 def faq(request):
     """ Страница ответов на основные вопросы к проекту """
 
@@ -323,5 +360,18 @@ def add_notice(request, pk):
         group = get_object_or_404(models.Group, pk=pk)
         notice = models.Notice(group=group, author=request.user.client, message=request.POST.get('message'))
         notice.save()
+
+        return HttpResponseRedirect(reverse('group', args=[group.id]))  
+
+
+@login_required
+def remove_notice(request, pk):
+    """ Вьюшка для удаления уведомления """
+
+    if request.method == "POST":
+        notice = get_object_or_404(Notice, pk=pk)
+        group = get_object_or_404(Group, pk=notice.group.id)
+        
+        notice.delete()
 
         return HttpResponseRedirect(reverse('group', args=[group.id]))  

@@ -17,13 +17,26 @@
           <div class="card-body">
             <div class="list-group list-group-flush">
               {% for notice in notices %}
-                <a href="#" class="list-group-item list-group-item-action ">{{ notice.message }}</a>
+                <a ref="#" 
+                  class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                  {{ notice.message }}
+                  {% if user.client in moderators %}
+                    <b-form 
+                      method="POST"
+                      action="{% url 'remove_notice' notice.id %}">
+                      <b-button type="submit" variant="light">
+                        <b-icon icon="x"></b-icon>
+                      </b-button>
+                    </b-form>
+                  {% endif %}
+                </a>
               {% endfor %}
             </div>
             {% if user.client in moderators %}
               <b-form 
                 @submit="addNotice" 
                 method="POST" 
+                class="mt-2"
                 action="{% url 'add_notice' group.id %}">
 
                 <b-form-input 
@@ -59,17 +72,54 @@
           </div>
         </div>
         <div class="mt-4">
+          {% if user.client in moderators %}
+            <b-card title="Новая публикация">
+              <b-form 
+                method="POST" 
+                action="{% url 'group_post' group.id %}" 
+                enctype="multipart/form-data"
+                @submit="onSubmitPost">
+                <b-form-input
+                  type="text"
+                  name="article"
+                  v-model="postForm.article"
+                  :state="validateArticle"
+                  placeholder="Заголовок для поста"></b-form-input>
+                <b-form-textarea
+                  name="text"
+                  v-model="postForm.text"
+                  :state="validateContent"
+                  placeholder="Текст под заголовок"
+                  class="my-2"></b-form-textarea>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="custom-file">
+                    <input 
+                    type="file" 
+                    name="file" 
+                    class="custom-control-input"
+                    v-model="postForm.file">
+                  </div>
+                  
+                  <b-button 
+                    type="submit"
+                    variant="dark"
+                    class="my-2 w-50">Опубликовать</b-button>
+                </div>
+              </b-form>
+            </b-card>
+          {% endif %}
           {% for post in posts %}
-            <div class="card card-outline-secondary mb-3">
+            <hr>  
+            <div class="card card-outline-secondary mt-2">
               <div class="card-header bg-dark text-light">
                 <h5>{{ post.article }}</h5>
               </div>
               <div class="card-body">
-                <p>{{ post.text }}</p>
+                <p>{{ post.text }}</p> 
+                <a href="{{ post.file.url }}"> {{ post.file}}</a>
                 <small class="text-muted">Опубликовано <a class="text-dark" href="{% url 'profile' post.author.id %}">{{ post.author }}</a>  {{ post.date_of_create }}</small>
               </div>
             </div>
-            <hr>  
           {% endfor %}
         </div>
       </b-col>
@@ -168,6 +218,24 @@
           </b-form>
         {% endif %}
      
+        <div class="card card-outline-secondary m-0 mt-4">
+          <div class="card-header bg-dark text-light">
+            <h5>Таблица лидеров</h5>
+          </div>
+          <div class="card-body">
+            <div class="list-group list-group-flush">
+              {% for listener in listeners %}
+                <a href="#" class="small list-group-item list-group-item-action d-flex justify-content-between">
+                  {{ listener.user.last_name }} [[' ']] {{ listener.user.first_name }}
+                  <small>  
+                    9
+                  </small>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
         <div class="card card-outline-secondary m-0 mt-4">
           <div class="card-header bg-blue text-light">
             <h5>Задачи</h5>
