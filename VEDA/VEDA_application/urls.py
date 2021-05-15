@@ -23,7 +23,10 @@ urlpatterns = [
     re_path('^post$', views.post, name="post"),                       # урл создания поста админа
     re_path('^notification/(?P<pk>\d+?)$', views.remove_notification, name="remove_notification"),                       # урл создания поста админа
     re_path('^notice/(?P<pk>\d+?)$', views.add_notice, name="add_notice"),                                               # урл создания объявления в группе
-    re_path('^remove_notice/(?P<pk>\d+?)$', views.remove_notice, name="remove_notice"),                                  # урл удаления объявления из группы
+    re_path('^remove_notice/(?P<pk>\d+?)$', views.remove_notice, name="remove_notice"),                                  # урл добавления задачи пользователю из группы
+    re_path('^add_task/(?P<pk>\d+?)$', views.add_task, name="add_task"),                                  # урл добавления задачи из группы
+    re_path('^update_task/(?P<pk>\d+?)$', views.update_task, name="update_task"),                                  # урл обновления статуса задачи из группы
+    re_path('^remove_task/(?P<pk>\d+?)$', views.remove_task, name="remove_task"),                                  # урл удаления задачи из группы
     path('', views.index, name="index")                            # главная страница
 ]
 

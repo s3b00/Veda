@@ -90,7 +90,43 @@
               <div class="card-body">
                 <div class="list-group list-group-flush">
                   <a href="{% url 'create_group' %}" class="list-group-item list-group-item-action ">Создать группу</a>
-                  <a class="list-group-item list-group-item-action" href="#">Фильтры</a>
+                  <a class="list-group-item list-group-item-action" href="#filters-collapse" @click.prevent v-b-toggle>Фильтры</a>
+                    <b-collapse id="filters-collapse">
+                      <b-card class="my-2">
+                        <b-card-body class="d-flex flex-column p-0 m-0 small text-dark justify-content-between">
+                          <b-form-checkbox
+                            switch
+                            v-model="personalNotifications"
+                            class="d-flex justify-content-between flex-row">
+                            Личные уведомления
+                          </b-form-checkbox>
+                          <b-form-checkbox
+                            v-model="systemNotifications"
+                            class="d-flex justify-content-between flex-row"
+                            switch>
+                            Системные уведомления
+                          </b-form-checkbox>
+                          <b-form-checkbox
+                            v-model="groupTasksNotifications"
+                            class="d-flex justify-content-between flex-row"
+                            switch>
+                            Задачи групп
+                          </b-form-checkbox>
+                          <b-form-checkbox
+                            v-model="groupPostsNotifications"
+                            class="d-flex justify-content-between flex-row"
+                            switch>
+                            Публикации групп
+                          </b-form-checkbox>
+                          <b-form-checkbox
+                            v-model="adminPostsNotifications"
+                            class="d-flex justify-content-between flex-row"
+                            switch>
+                            Посты от разработчиков
+                          </b-form-checkbox>
+                        </b-card-body>
+                      </b-card>
+                  </b-collapse>
                   {% if user.is_staff %}
                     <a href="#" class="list-group-item list-group-item-action" v-b-modal.new-post>Новый пост</a>
                   {% endif %}
@@ -115,7 +151,40 @@
                   </a>
                   <b-collapse id="notification-collapse">
                     {% for notification in notifications %}
-                      <b-notification id="{{ notification.id }}" message="{{ notification.message }}" />
+                      {% if notification.priority == 1 %}
+                        <b-notification 
+                          v-if="personalNotifications" 
+                          id="{{ notification.id }}" 
+                          message="{{ notification.message }}" />
+                      {% endif %}
+
+                      {% if notification.priority == 2 %}
+                        <b-notification 
+                          v-if="systemNotifications" 
+                          id="{{ notification.id }}" 
+                          message="{{ notification.message }}" />
+                      {% endif %}
+
+                      {% if notification.priority == 3 %}
+                        <b-notification 
+                          v-if="groupTasksNotifications" 
+                          id="{{ notification.id }}" 
+                          message="{{ notification.message }}" />
+                      {% endif %}
+
+                      {% if notification.priority == 4 %}
+                        <b-notification 
+                          v-if="groupPostsNotifications" 
+                          id="{{ notification.id }}" 
+                          message="{{ notification.message }}" />
+                      {% endif %}
+
+                      {% if notification.priority == 5 %}
+                        <b-notification 
+                          v-if="adminPostsNotifications" 
+                          id="{{ notification.id }}" 
+                          message="{{ notification.message }}" />
+                      {% endif %}
                     {% endfor %}
                   </b-collapse>
                   </div>

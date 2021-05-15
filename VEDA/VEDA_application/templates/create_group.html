@@ -169,6 +169,31 @@
               
               <h1 id="list-item-3"
               class="mt-4">Дополнительные настройки</h1>
+
+              <b-form-checkbox
+                size="lg"
+                v-model="generalForm.hNotices"
+                name="notices"
+                checked>
+                Блок объявлений
+              </b-form-checkbox>
+
+              <b-form-checkbox
+                size="lg"
+                v-model="generalForm.hTasks"
+                name="tasks"
+                checked>
+                Блок задач
+              </b-form-checkbox>
+
+              <b-form-checkbox
+                size="lg"
+                class=""
+                v-model="generalForm.hSheet"
+                name="sheet"
+                checked>
+                Блок расписания и ведомости
+              </b-form-checkbox>
               
               <div class="d-flex justify-content-around align-items-center mt-4">
                 <b-button type="submit" class="w-50" variant="dark">Создать группу</b-button>

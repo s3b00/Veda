@@ -12,10 +12,16 @@ let group = new Vue({
             text: '',
             isSubmited: false,
         },
+        taskForm: {
+            isSubmited: false,
+            user: null,
+            content: '',
+        },
         sheetModal: {
             stickyHeader: true,
         },
         modalShow: false,
+        taskModalShow: false,
     },
     methods: {
         addNotice(event) {
@@ -38,6 +44,20 @@ let group = new Vue({
 
                 event.preventDefault()
             }
+        },
+        resetTaskModal(){
+            this.taskForm.content = ''
+            this.taskForm.user = null
+        },
+        taskSubmit(event) {
+            event.preventDefault()
+
+            this.taskForm.isSubmited = true
+
+            if (this.validateUser && this.validateTaskContent) {
+                let form = document.getElementById('taskForm')
+                form.submit()
+            }
         }
     },
     computed: {
@@ -51,6 +71,20 @@ let group = new Vue({
         validateContent() {
             if (this.postForm.isSubmited) {
                 return this.postForm.text.length > 0
+            } else {
+                return null
+            }
+        },
+        validateUser() {
+            if (this.taskForm.isSubmited) {
+                return this.taskForm.user
+            } else {
+                return null
+            }
+        },
+        validateTaskContent() {
+            if (this.taskForm.isSubmited) {
+                return this.taskForm.content.length > 0
             } else {
                 return null
             }

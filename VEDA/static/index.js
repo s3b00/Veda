@@ -54,7 +54,12 @@ let index = new Vue({
     article: '',
     content: '',
     articleValid: null,
-    contentValid: null
+    contentValid: null,
+    personalNotifications: true,
+    systemNotifications: true,
+    groupTasksNotifications: true,
+    groupPostsNotifications: true,
+    adminPostsNotifications: true,
   }
 })
 

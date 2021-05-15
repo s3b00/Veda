@@ -6,9 +6,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from VEDA_application.models import Admin_post, Discipline, Group, Group_post, Lesson, Note, Notice, Notification
+from VEDA_application.models import Admin_post, Client, Discipline, Group, Group_post, Lesson, Note, Notice, Notification, Task
 
 import json
+
+from datetime import datetime
 
 def template(request):
     return render(request, 'main_template.html', context={
@@ -131,7 +133,6 @@ def group(request, pk):
     if request.method == "GET":
         group = get_object_or_404(models.Group, pk=pk)
 
-        print(group.listeners.all() & group.moderators.all())
         return render(request, 'group.html', context={
             'group': group,
             'listeners': group.listeners.all(),
@@ -144,6 +145,129 @@ def group(request, pk):
             'days': range(1, 32),
             'notes': Note.objects.filter(group__id=group.id)
         })
+
+
+@login_required
+def create_group(request):
+    """ Страница создания комнаты группы """
+
+    if request.method == "GET":
+        return render(request, 'create_group.html', context={
+
+        })
+    elif request.method == "POST":
+        data = json.loads(request.body)
+
+        group = Group.objects.create(
+            name = data['name'],
+            tag = data['tag'],
+            hNotices = data['hNotices'],
+            hTasks = data['hTasks'],
+            hSheet = data['hSheet'],
+        )
+
+        group.moderators.add(request.user.client)
+        group.save()
+
+        notification = Notification.objects.create(
+            receiver=request.user.client,
+            message=f'Вы создали группу {group.name}',
+            priority=2
+        )
+
+        disciplines = []
+
+        for lmo in data['mo']:
+            if lmo not in disciplines:
+                disciplines.append(lmo)
+
+            lesson = Lesson(
+                group=group,
+                discipline=lmo,
+                day=1,
+            )
+            
+            lesson.save()
+        
+        for lt in data['tu']:
+            if lt not in disciplines:
+                disciplines.append(lt)
+
+            lesson = Lesson(
+                group=group,
+                discipline=lt,
+                day=2
+            )
+            
+            lesson.save()
+
+        for lwe in data['we']:
+            if lwe not in disciplines:
+                disciplines.append(lwe)
+
+            lesson = Lesson(
+                group=group,
+                discipline=lwe,
+                day=3
+            )
+            
+            lesson.save()
+   
+        for lth in data['th']:
+            if lth not in disciplines:
+                disciplines.append(lth)
+
+            lesson = Lesson(
+                group=group,
+                discipline=lth,
+                day=4
+            )
+            
+            lesson.save()
+        
+        for lfr in data['fr']:
+            if lfr not in disciplines:
+                disciplines.append(lfr)
+
+            lesson = Lesson(
+                group=group,
+                discipline=lfr,
+                day=5
+            )
+            
+            lesson.save()
+
+        for lsa in data['sa']:
+            if lsa not in disciplines:
+                disciplines.append(lsa)
+
+            lesson = Lesson(
+                group=group,
+                discipline=lsa,
+                day=6
+            )
+            
+            lesson.save()
+        
+        for lsu in data['su']:
+            if lsu not in disciplines:
+                disciplines.append(lsu)
+
+            lesson = Lesson(
+                group=group,
+                discipline=lsu,
+                day=7
+            )
+            
+            lesson.save()
+        
+        for discipline in disciplines:
+            new_discipline = Discipline.objects.create(
+                group = group,
+                name = discipline
+            )
+
+        return HttpResponseRedirect(reverse('create_group'))
 
 
 def group_enter(request, pk):
@@ -256,123 +380,53 @@ def recover(request):
 
 
 @login_required
-def create_group(request):
-    """ Страница создания комнаты группы """
+def add_task(request, pk):
+    """ Вью для добавления задачи пользователю в конкретной группе """
 
-    if request.method == "GET":
-        return render(request, 'create_group.html', context={
+    if request.method=="POST":
+        group = get_object_or_404(Group, pk=pk)
+        user = get_object_or_404(Client, pk=request.POST.get('user'))
 
-        })
-    elif request.method == "POST":
-        data = json.loads(request.body)
-
-        group = Group.objects.create(
-            name = data['name'],
-            tag = data['tag'],
+        task = Task.objects.create(
+            group = group,
+            receiver = user,
+            content = request.POST.get('content'),
+            status = 0
         )
-
-        group.moderators.add(request.user.client)
-        group.save()
 
         notification = Notification.objects.create(
-            receiver=request.user.client,
-            message=f'Вы создали группу {group.name}',
-            priority=2
+            receiver = user,
+            message = f"Вам пришла новая задача в группе #{group.name}",
+            priority = 3
         )
 
-        disciplines = []
+        return HttpResponseRedirect(reverse('group', args=[pk]))
 
-        for lmo in data['mo']:
-            if lmo not in disciplines:
-                disciplines.append(lmo)
 
-            lesson = Lesson(
-                group=group,
-                discipline=lmo,
-                day=1,
-            )
-            
-            lesson.save()
+@login_required
+def update_task(request, pk):
+    """ Вью для изменения статуса выполнения задачи в конкретной группе """
+
+    if request.method == "POST":
+        task = get_object_or_404(Task, pk=pk)
+
+        if task.status == 0:
+            task.status = 1
+        else:
+            task.status = 0
         
-        for lt in data['tu']:
-            if lt not in disciplines:
-                disciplines.append(lt)
+        task.date_of_completion = datetime.now()
 
-            lesson = Lesson(
-                group=group,
-                discipline=lt,
-                day=2
-            )
-            
-            lesson.save()
+        task.save()
 
-        for lwe in data['we']:
-            if lwe not in disciplines:
-                disciplines.append(lwe)
+        return HttpResponseRedirect(reverse('group', args=[task.group.id]))
 
-            lesson = Lesson(
-                group=group,
-                discipline=lwe,
-                day=3
-            )
-            
-            lesson.save()
-   
-        for lth in data['th']:
-            if lth not in disciplines:
-                disciplines.append(lth)
 
-            lesson = Lesson(
-                group=group,
-                discipline=lth,
-                day=4
-            )
-            
-            lesson.save()
-        
-        for lfr in data['fr']:
-            if lfr not in disciplines:
-                disciplines.append(lfr)
+@login_required
+def remove_task(request, pk):
+    """  Вью для удаления задачи из конкретной группы """
 
-            lesson = Lesson(
-                group=group,
-                discipline=lfr,
-                day=5
-            )
-            
-            lesson.save()
-
-        for lsa in data['sa']:
-            if lsa not in disciplines:
-                disciplines.append(lsa)
-
-            lesson = Lesson(
-                group=group,
-                discipline=lsa,
-                day=6
-            )
-            
-            lesson.save()
-        
-        for lsu in data['su']:
-            if lsu not in disciplines:
-                disciplines.append(lsu)
-
-            lesson = Lesson(
-                group=group,
-                discipline=lsu,
-                day=7
-            )
-            
-            lesson.save()
-        
-        for discipline in disciplines:
-            new_discipline = Discipline.objects.create(
-                group = group,
-                name = discipline
-            )
-
-        return HttpResponseRedirect(reverse('create_group'))
+    pass
 
 
 @login_required

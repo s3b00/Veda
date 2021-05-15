@@ -120,6 +120,9 @@ class Group(models.Model):
     name = models.CharField(max_length=40)              # Название группы
     tag = models.CharField(max_length=40, null=True)              # Тег для поиска
 
+    hNotices = models.BooleanField()
+    hTasks = models.BooleanField()
+    hSheet = models.BooleanField()
 
     def get_absolute_url(self):
         return reverse('group', args=[str(self.id)])
@@ -244,7 +247,7 @@ class Task(models.Model):
 
     content = models.CharField(max_length=100)                      # Содержание задачи
     date_of_create = models.DateTimeField(auto_now_add=True)        # Дата открытия задачи
-    date_of_completion = models.DateTimeField()                     # Дата срока для завершения
+    date_of_completion = models.DateTimeField(null=True)                     # Дата срока для завершения
     status = models.IntegerField(choices=(
         (0, 'Ждет выполнения'),
         (1, 'Сделано')
@@ -253,6 +256,9 @@ class Task(models.Model):
         0. Не выполнена
         1. Выполнена 
     """
+
+    class Meta:
+        ordering=['-id']
 
 class Notice(models.Model):
     """ Модель для объявлений, которые делают модераторы в группах """

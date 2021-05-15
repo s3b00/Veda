@@ -10,47 +10,50 @@
   <b-container id="group" class="mt-5">
     <b-row>
       <b-col cols=8>
-        <div class="card card-outline-secondary m-0">
-          <div class="card-header bg-dark text-light">
-            <h5>Объявления</h5>
-          </div>
-          <div class="card-body">
-            <div class="list-group list-group-flush">
-              {% for notice in notices %}
-                <a ref="#" 
-                  class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                  {{ notice.message }}
-                  {% if user.client in moderators %}
-                    <b-form 
-                      method="POST"
-                      action="{% url 'remove_notice' notice.id %}">
-                      <b-button type="submit" variant="light">
-                        <b-icon icon="x"></b-icon>
-                      </b-button>
-                    </b-form>
-                  {% endif %}
-                </a>
-              {% endfor %}
+        {% if group.hNotices %}
+          <div class="card card-outline-secondary m-0">
+            <div class="card-header bg-dark text-light">
+              <h5>Объявления</h5>
             </div>
-            {% if user.client in moderators %}
-              <b-form 
-                @submit="addNotice" 
-                method="POST" 
-                class="mt-2"
-                action="{% url 'add_notice' group.id %}">
+            <div class="card-body">
+              <div class="list-group list-group-flush">
+                {% for notice in notices %}
+                  <a ref="#" 
+                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    {{ notice.message }}
+                    {% if user.client in moderators %}
+                      <b-form 
+                        method="POST"
+                        action="{% url 'remove_notice' notice.id %}">
+                        <b-button type="submit" variant="light">
+                          <b-icon icon="x"></b-icon>
+                        </b-button>
+                      </b-form>
+                    {% endif %}
+                  </a>
+                {% endfor %}
+              </div>
+              {% if user.client in moderators %}
+                <b-form 
+                  @submit="addNotice" 
+                  method="POST" 
+                  class="mt-2"
+                  action="{% url 'add_notice' group.id %}">
 
-                <b-form-input 
-                  type="text" 
-                  v-model="noticeManager.notice" 
-                  class="inline" 
-                  name="message"
-                  :state="noticeManager.noticeValid"
-                  placeholder="Сообщите что-нибудь!"></b-form-input>
-              </b-form>
-            {% endif %}
+                  <b-form-input 
+                    type="text" 
+                    v-model="noticeManager.notice" 
+                    class="inline" 
+                    name="message"
+                    :state="noticeManager.noticeValid"
+                    placeholder="Сообщите что-нибудь!"></b-form-input>
+                </b-form>
+              {% endif %}
+            </div>
           </div>
-        </div>
-        <div class="card card-outline-secondary m-0 mt-4">
+        {% endif %}
+        
+        <div class="card card-outline-secondary m-0 {% if group.hNotices %} mt-4 {% else %} mt-0 {% endif %}">
           <div class="card-header bg-dark text-light">
             <h5>Участники</h5>
           </div>
@@ -125,84 +128,90 @@
       </b-col>
 
       <b-col cols=4>
-        <div class="card card-outline-secondary m-0">
-          <div class="card-header text-light bg-blue">
-            <h5>Расписание</h5>
+        {% if group.hSheet %}
+          <div class="card card-outline-secondary m-0">
+            <div class="card-header text-light bg-blue">
+              <h5>Расписание</h5>
+            </div>
+            <div class="card-body">
+              <b-tabs small vertical justified>
+                <b-tab text="dark" title="Понедельник" active>
+                  <div class="list-group list-group-flush">
+                    {% for x in sheet %}
+                      {% if x.day == 1 %}
+                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                      {% endif %}
+                    {% endfor %}
+                    <a href="#" class="list-group-item list-group-item-action small d-flex justify-content-center">
+                      <b-icon icon="plus-square"></b-icon>
+                    </a>
+                  </div>
+                </b-tab>
+
+                <b-tab text="dark" title="Вторник">
+                  <div class="list-group list-group-flush">
+                    {% for x in sheet %}
+                      {% if x.day == 2 %}
+                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </b-tab>
+
+                <b-tab text="dark" title="Среда">
+                  <div class="list-group list-group-flush">
+                    {% for x in sheet %}
+                      {% if x.day == 4 %}
+                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </b-tab>
+
+                <b-tab text="dark" title="Четверг">
+                  <div class="list-group list-group-flush">
+                    {% for x in sheet %}
+                      {% if x.day == 5 %}
+                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </b-tab>
+
+                <b-tab text="dark" title="Пятница">
+                  <div class="list-group list-group-flush">
+                    {% for x in sheet %}
+                      {% if x.day == 5 %}
+                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </b-tab>
+
+                <b-tab text="dark" title="Суббота">
+                  <div class="list-group list-group-flush">
+                    {% for x in sheet %}
+                      {% if x.day == 6 %}
+                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </b-tab>
+
+                <b-tab text="dark" title="Воскресенье">
+                  <div class="list-group list-group-flush">
+                    {% for x in sheet %}
+                      {% if x.day == 7 %}
+                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </b-tab>
+              </b-tabs>
+            </div>
           </div>
-          <div class="card-body">
-            <b-tabs small vertical justified>
-              <b-tab text="dark" title="Понедельник" active>
-                <div class="list-group list-group-flush">
-                  {% for x in sheet %}
-                    {% if x.day == 1 %}
-                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-              </b-tab>
-
-              <b-tab text="dark" title="Вторник">
-                <div class="list-group list-group-flush">
-                  {% for x in sheet %}
-                    {% if x.day == 2 %}
-                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-              </b-tab>
-
-              <b-tab text="dark" title="Среда">
-                <div class="list-group list-group-flush">
-                  {% for x in sheet %}
-                    {% if x.day == 4 %}
-                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-              </b-tab>
-
-              <b-tab text="dark" title="Четверг">
-                <div class="list-group list-group-flush">
-                  {% for x in sheet %}
-                    {% if x.day == 5 %}
-                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-              </b-tab>
-
-              <b-tab text="dark" title="Пятница">
-                <div class="list-group list-group-flush">
-                  {% for x in sheet %}
-                    {% if x.day == 5 %}
-                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-              </b-tab>
-
-              <b-tab text="dark" title="Суббота">
-                <div class="list-group list-group-flush">
-                  {% for x in sheet %}
-                    {% if x.day == 6 %}
-                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-              </b-tab>
-
-              <b-tab text="dark" title="Воскресенье">
-                <div class="list-group list-group-flush">
-                  {% for x in sheet %}
-                    {% if x.day == 7 %}
-                      <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-              </b-tab>
-            </b-tabs>
-          </div>
-        </div>
+        {% endif %}
+        
         {% if not user.client in listeners and not user.client in moderators %}
           <b-form method="POST" action="{% url 'group_enter' group.id %}">
             <b-button type="submit" class="btn w-100 btn-dark my-2">
@@ -218,45 +227,103 @@
           </b-form>
         {% endif %}
 
-        {% if user.client in moderators or user.client in listeners%}
-          <b-button variant="dark" class="my-2 w-100" @click="modalShow = !modalShow"> Получить ведомость </b-button>
-          [[ sheetModal.showModal ]]  
+        {% if group.hSheet %}
+          {% if user.client in moderators or user.client in listeners %}
+            <b-button variant="dark" class="my-2 w-100" @click="modalShow = !modalShow"> Получить ведомость </b-button>
+          {% endif %}
         {% endif %}
      
-        <div class="card card-outline-secondary m-0 mt-4">
-          <div class="card-header bg-dark text-light">
-            <h5>Таблица лидеров</h5>
-          </div>
-          <div class="card-body">
-            <div class="list-group list-group-flush">
-              {% for listener in listeners %}
-                <a href="#" class="small list-group-item list-group-item-action d-flex justify-content-between">
-                  {{ listener.user.last_name }} [[' ']] {{ listener.user.first_name }}
-                  <small>  
-                    9
-                  </small>
-                </a>
-              {% endfor %}
+     
+        {% if group.hSheet %}
+          <div class="card card-outline-secondary m-0 mt-4">
+            <div class="card-header bg-dark text-light">
+              <h5>Таблица лидеров</h5>
+            </div>
+            <div class="card-body">
+              <div class="list-group list-group-flush">
+                {% for listener in listeners %}
+                  <a href="#" class="small list-group-item list-group-item-action d-flex justify-content-between">
+                    {{ listener.user.last_name }} [[' ']] {{ listener.user.first_name }}
+                    <small>  
+                      9
+                    </small>
+                  </a>
+                {% endfor %}
+              </div>
             </div>
           </div>
-        </div>
+        {% endif %}
 
-        <div class="card card-outline-secondary m-0 mt-4">
-          <div class="card-header bg-blue text-light">
-            <h5>Задачи</h5>
-          </div>
-          <div class="card-body">
-            <div class="list-group list-group-flush">
-              {% for task in tasks %}
-                <a href="#" class="small list-group-item list-group-item-action d-flex justify-content-between">{{ task.content }} 
-                  <small> @{{ task.receiver.user.username }} 
-                    <b-icon icon="dot" scale=2 variant="{% if task.status == 0 %}danger{% else %}success{% endif %}"></b-icon>
-                  </small>
-                </a>
-              {% endfor %}
+        {% if group.hTasks %}
+          <div class="card card-outline-secondary m-0 mt-4">
+            <div class="card-header bg-blue text-light">
+              <h5 class="d-flex justify-content-between align-items-center">Задачи
+                {% if user.client in moderators %}
+                  <b-icon icon="plus" font-scale="1.5" @click="taskModalShow = !taskModalShow"></b-icon>
+                {% endif %}
+              </h5>
             </div>
+            <div class="card-body">
+              <div class="list-group list-group-flush">
+                {% for task in tasks %}
+                  <b-form
+                    method="POST"
+                    action="{% url 'update_task' task.id %}">
+                    <b-button variant="link" type="submit" class="small list-group-item list-group-item-action d-flex align-items-center justify-content-between">{{ task.content }} 
+                      <small> 
+                        <span>@{{ task.receiver.user.username }} </span>
+                        <span class="text-secondary small">{{ task.date_of_completion }}</span>
+                        <b-icon icon="dot" scale=2 variant="{% if task.status == 0 %}danger{% else %}success{% endif %}"></b-icon>
+                      </small>
+                    </b-button>
+                  </b-form>
+                {% endfor %}
+              </div>
+            </div>
+
+            <b-modal
+              id="taskModal"
+              v-model="taskModalShow"
+              title="Новая задача"
+              @show="resetTaskModal"
+              @reset="resetTaskModal"
+              @ok="taskSubmit">
+              <b-form
+                id="taskForm"
+                method="POST"
+                action="{% url 'add_task' group.id %}">
+                <b-form-input-group>
+                  <b-form-select 
+                  v-model="taskForm.user" 
+                  size="lg" 
+                  class="mt-2 w-100"
+                  :state="validateUser">
+                    <template #first>
+                      <b-form-select-option :value="null" selected disabled>Выберите пользователя для задачи</b-form-select-option>
+                    </template>
+          
+                    {% for user in listeners %}
+                      <b-form-select-option value="{{ user.id }}">{{ user.user.first_name }} {{ user.user.last_name }}</b-form-select-option>
+                    {% endfor %}
+
+                    {% for user in moderators %}
+                      <b-form-select-option value="{{ user.id }}">{{ user.user.first_name }} {{ user.user.last_name }}</b-form-select-option>
+                    {% endfor %}
+                  </b-form-select>
+                  <input type="hidden" v-model="taskForm.user" name="user"> 
+                  <b-form-invalid-feedback :state="validateUser">Выберите пользователя</b-form-invalid-feedback>
+                </b-form-input-group>
+                <b-form-input-group>
+                  <b-form-input
+                    placeholder="Содержание задачи"
+                    name="content"
+                    v-model="taskForm.content"></b-form-input>
+                </b-form-input-group>
+              </b-form>
+            </b-modal>
           </div>
-        </div>
+        {% endif %}
+        
       </b-col>
     </b-row>
 
