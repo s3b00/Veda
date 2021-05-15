@@ -141,13 +141,34 @@ class Lesson(models.Model):
     discipline = models.CharField(max_length=40, null=False, blank=False)
 
 
+class Discipline(models.Model):
+    """ Модель для представления дисциплины, которая используется в группе и по ней ведут оценки """
+
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, blank=False, null=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
 class Note(models.Model):
     """ Модель для записей результатов учащихся в группе """
 
-    group = models.OneToOneField(Group, on_delete=models.CASCADE)
-    receiver = models.OneToOneField(Client, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    receiver = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_of_receive = models.DateField(blank=False, null=False)
     value = models.CharField(max_length=10, blank=True)
+    discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.receiver.user.username + " " + self.value
+
+    
+    class Meta:
+        ordering = ['date_of_receive']
 
 
 class Group_post(models.Model):

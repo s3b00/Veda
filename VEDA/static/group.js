@@ -11,7 +11,11 @@ let group = new Vue({
             file: null,
             text: '',
             isSubmited: false,
-        }
+        },
+        sheetModal: {
+            stickyHeader: true,
+        },
+        modalShow: false,
     },
     methods: {
         addNotice(event) {

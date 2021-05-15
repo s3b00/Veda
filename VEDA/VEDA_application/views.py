@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from VEDA_application.models import Admin_post, Group, Group_post, Lesson, Notice, Notification
+from VEDA_application.models import Admin_post, Discipline, Group, Group_post, Lesson, Note, Notice, Notification
 
 import json
 
@@ -131,6 +131,7 @@ def group(request, pk):
     if request.method == "GET":
         group = get_object_or_404(models.Group, pk=pk)
 
+        print(group.listeners.all() & group.moderators.all())
         return render(request, 'group.html', context={
             'group': group,
             'listeners': group.listeners.all(),
@@ -138,7 +139,10 @@ def group(request, pk):
             'notices': models.Notice.objects.filter(group__id=group.id),
             'tasks': models.Task.objects.filter(group__id=group.id),
             'posts': models.Group_post.objects.filter(group__id=group.id),
-            'sheet': models.Lesson.objects.filter(group__id=group.id)
+            'sheet': models.Lesson.objects.filter(group__id=group.id),
+            'disciplines': models.Discipline.objects.filter(group__id=group.id),
+            'days': range(1, 32),
+            'notes': Note.objects.filter(group__id=group.id)
         })
 
 
@@ -276,7 +280,12 @@ def create_group(request):
             priority=2
         )
 
+        disciplines = []
+
         for lmo in data['mo']:
+            if lmo not in disciplines:
+                disciplines.append(lmo)
+
             lesson = Lesson(
                 group=group,
                 discipline=lmo,
@@ -286,6 +295,9 @@ def create_group(request):
             lesson.save()
         
         for lt in data['tu']:
+            if lt not in disciplines:
+                disciplines.append(lt)
+
             lesson = Lesson(
                 group=group,
                 discipline=lt,
@@ -295,6 +307,9 @@ def create_group(request):
             lesson.save()
 
         for lwe in data['we']:
+            if lwe not in disciplines:
+                disciplines.append(lwe)
+
             lesson = Lesson(
                 group=group,
                 discipline=lwe,
@@ -304,6 +319,9 @@ def create_group(request):
             lesson.save()
    
         for lth in data['th']:
+            if lth not in disciplines:
+                disciplines.append(lth)
+
             lesson = Lesson(
                 group=group,
                 discipline=lth,
@@ -313,6 +331,9 @@ def create_group(request):
             lesson.save()
         
         for lfr in data['fr']:
+            if lfr not in disciplines:
+                disciplines.append(lfr)
+
             lesson = Lesson(
                 group=group,
                 discipline=lfr,
@@ -322,6 +343,9 @@ def create_group(request):
             lesson.save()
 
         for lsa in data['sa']:
+            if lsa not in disciplines:
+                disciplines.append(lsa)
+
             lesson = Lesson(
                 group=group,
                 discipline=lsa,
@@ -331,6 +355,9 @@ def create_group(request):
             lesson.save()
         
         for lsu in data['su']:
+            if lsu not in disciplines:
+                disciplines.append(lsu)
+
             lesson = Lesson(
                 group=group,
                 discipline=lsu,
@@ -338,6 +365,12 @@ def create_group(request):
             )
             
             lesson.save()
+        
+        for discipline in disciplines:
+            new_discipline = Discipline.objects.create(
+                group = group,
+                name = discipline
+            )
 
         return HttpResponseRedirect(reverse('create_group'))
 
