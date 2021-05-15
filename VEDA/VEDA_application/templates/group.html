@@ -217,6 +217,11 @@
             </b-button>
           </b-form>
         {% endif %}
+
+        {% if user.client in moderators or user.client in listeners%}
+          <b-button variant="dark" class="my-2 w-100" @click="modalShow = !modalShow"> Получить ведомость </b-button>
+          [[ sheetModal.showModal ]]  
+        {% endif %}
      
         <div class="card card-outline-secondary m-0 mt-4">
           <div class="card-header bg-dark text-light">
@@ -254,6 +259,219 @@
         </div>
       </b-col>
     </b-row>
+
+    <b-modal size="xl" v-model="modalShow" title="Ведомость группы">
+      <b-tabs content-class="mt-2">
+        <b-tab title="Январь">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                <b-table-simple 
+                  responsive 
+                  hover
+                  small
+                  bordered>
+                  <b-thead>
+                    <b-tr>
+                      <b-th sticky-column>Ученик</b-th>
+                      {% for day in days %}
+                        <b-th>{{ day }}</b-th>
+                      {% endfor %}
+                    </b-tr>
+                  </b-thead>
+                  
+                  {% for student in listeners %}
+                    <b-tr>
+                      <b-th>{{ student.user.first_name }} {{ student.user.last_name }} </b-th>
+                      {% for note in notes %}
+                        {% for day in days %}
+                          {% if note.date_of_receive.day == day and note.receiver == student %}
+                            <b-th>{{ note.value }}</b-th>
+                          {% endif %}
+                        {% endfor %}
+                      {% endfor %}
+                    </b-tr>
+                  {% endfor %}
+                  {% for student in moderators %}
+                    <b-tr>
+                      <b-th>{{ student.user.first_name }} {{ student.user.last_name }} </b-th>
+                    </b-tr>
+                  {% endfor %}
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Февраль">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Март">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Апрель">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Май">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Июнь">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Июль">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Август">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Сентябрь">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Октябрь">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Ноябрь">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+          
+          <b-table
+            :sticky-header="sheetModal.stickyHeader">
+
+          </b-table>
+        </b-tab>
+        <b-tab title="Декабрь">
+          <b-tabs>
+            {% for discipline in disciplines %}
+              <b-tab title="{{ discipline.name }}">
+                <b-table>
+                  <b-thead>
+                    <b-tr>
+                      <b-th>Ученик</b-th>
+                      {% for day in days %}
+                        <b-th>{{ day }}</b-th>
+                      {% endfor %}
+                    </b-tr>
+                  </b-thead>
+                  
+                  {% for student in listeners %}
+                    <b-tr>
+                      <b-th>{{ student.user.first_name }} {{ student.user.last_name }} </b-th>
+                    </b-tr>
+                  {% endfor %}
+                </b-table>
+              </b-tab>
+            {% endfor %}
+          </b-tabs>
+        </b-tab>
+      </b-tabs>
+    </b-modal>
   </b-container>
 {% endblock application %}
 
