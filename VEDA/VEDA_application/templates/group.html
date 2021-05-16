@@ -8,8 +8,8 @@
 {% block application %}
   {% include 'borders_template.html' %}
   <b-container id="group" class="mt-5">
-    <b-row>
-      <b-col cols=8>
+    <b-row class="flex-column flex-lg-row">
+      <b-col cols=12 lg=8>
         {% if group.hNotices %}
           <div class="card card-outline-secondary m-0">
             <div class="card-header bg-dark text-light">
@@ -64,16 +64,46 @@
           <div class="card-body">
             <div class="d-flex">
               {% for moderator in moderators %}
-                <div class="d-flex flex-column mx-2">
+                <div id="popover-target-{{ moderator.id }}" class="d-flex flex-column mx-2">
                   <b-avatar href="{% url 'profile' moderator.id %}" src="{{ moderator.userpic.url }}"></b-avatar>
                   {{  moderator.user.username }}
-                </div>                
+                </div>
+                {% if user.client in moderators and moderator == user.client %} 
+                  <b-popover target="popover-target-{{ moderator.id }}" triggers="hover" placement="rightbottom">
+                    <div class="list-group list-group-flush">
+                      <b-form
+                        method="POST"
+                        action="{% url 'update_status_group' group.id %}">
+                        <input type="hidden" name="user" value="{{ moderator.id }}">
+                        <b-button type="submit" variant="link" size="sm" class="list-group-item list-group-item-action small">Сняться с модераторов</b-button>
+                      </b-form>
+                    </div>
+                  </b-popover>
+                {% endif %}
               {% endfor %}
               {% for listener in listeners %}
-                <div class="d-flex flex-column mx-2">
+                <div id="popover-target-{{ listener.id }}" class="d-flex flex-column mx-2">
                   <b-avatar href="{% url 'profile' listener.id %}" src="{{ listener.userpic.url }}"></b-avatar>
                   {{  listener.user.username }}
-                </div>                
+                </div>   
+                {% if user.client in moderators %} 
+                  <b-popover target="popover-target-{{ listener.id }}" triggers="hover" placement="rightbottom">
+                    <div class="list-group list-group-flush">
+                      <b-form
+                        method="POST"
+                        action="{% url 'kick_user' group.id %}">
+                        <input type="hidden" name="user" value="{{ listener.id }}">
+                        <b-button type="submit" variant="link" size="sm" class="list-group-item list-group-item-action small">Выгнать</b-button>
+                      </b-form>
+                      <b-form
+                        method="POST"
+                        action="{% url 'update_status_group' group.id %}">
+                        <input type="hidden" name="user" value="{{ listener.id }}">
+                        <b-button type="submit" variant="link" size="sm" class="list-group-item list-group-item-action small">Назначить модератором</b-button>
+                      </b-form>
+                    </div>
+                  </b-popover>
+                {% endif %}
               {% endfor %}
             </div>
           </div>
@@ -132,7 +162,11 @@
       </b-col>
 
       <b-col cols=4>
-        <b-jumbotron header="{{ group.name }}" class="text-center text-light mb-3 bg-dark"></b-jumbotron>
+        <div class="card card-outline-secondary m-0 mb-3 no-body d-flex justify-content-center align-items-center">
+          <div class="card-header text-dark bg-white">
+            <h1>{{ group.name }}</h1>
+          </div>
+        </div>
         {% if group.hSheet %}
           <div class="card card-outline-secondary m-0">
             <div class="card-header text-light bg-blue">
@@ -144,12 +178,28 @@
                   <div class="list-group list-group-flush">
                     {% for x in sheet %}
                       {% if x.day == 1 %}
-                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% if user.client in moderators %} 
+                          <b-form
+                            method="POST"
+                            action="{% url 'set_sheet' x.id %}">
+                            <b-form-input size="sm" name="discipline" class="list-group-item list-group-item-action small" value="{{ x.discipline }}">  </b-form-input>
+                          </b-form>
+                        {% else %}
+                          <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% endif %}
                       {% endif %}
                     {% endfor %}
-                    <a href="#" class="list-group-item list-group-item-action small d-flex justify-content-center">
-                      <b-icon icon="plus-square"></b-icon>
-                    </a>
+                    <b-form
+                      method="POST"
+                      action="{% url 'add_sheet' group.id %}">
+                      <b-form-input 
+                        name="discipline" 
+                        placeholder="Добавить предмет" 
+                        size="sm"
+                        class="list-group-item list-group-item-action small mt-2">
+                      </b-form-input>
+                      <input type="hidden" name="day" value="1">
+                    </b-form>
                   </div>
                 </b-tab>
 
@@ -157,9 +207,28 @@
                   <div class="list-group list-group-flush">
                     {% for x in sheet %}
                       {% if x.day == 2 %}
-                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% if user.client in moderators %} 
+                          <b-form
+                            method="POST"
+                            action="{% url 'set_sheet' x.id %}">
+                            <b-form-input size="sm" name="discipline" class="list-group-item list-group-item-action small" value="{{ x.discipline }}">  </b-form-input>
+                          </b-form>
+                        {% else %}
+                          <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% endif %}
                       {% endif %}
                     {% endfor %}
+                    <b-form
+                      method="POST"
+                      action="{% url 'add_sheet' group.id %}">
+                      <b-form-input 
+                        name="discipline" 
+                        placeholder="Добавить предмет" 
+                        size="sm"
+                        class="list-group-item list-group-item-action small mt-2">
+                      </b-form-input>
+                      <input type="hidden" name="day" value="2">
+                    </b-form>
                   </div>
                 </b-tab>
 
@@ -167,9 +236,28 @@
                   <div class="list-group list-group-flush">
                     {% for x in sheet %}
                       {% if x.day == 4 %}
-                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% if user.client in moderators %} 
+                          <b-form
+                            method="POST"
+                            action="{% url 'set_sheet' x.id %}">
+                            <b-form-input size="sm" name="discipline" class="list-group-item list-group-item-action small" value="{{ x.discipline }}">  </b-form-input>
+                          </b-form>
+                        {% else %}
+                          <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% endif %}
                       {% endif %}
                     {% endfor %}
+                    <b-form
+                      method="POST"
+                      action="{% url 'add_sheet' group.id %}">
+                      <b-form-input 
+                        name="discipline" 
+                        placeholder="Добавить предмет" 
+                        size="sm"
+                        class="list-group-item list-group-item-action small mt-2">
+                      </b-form-input>
+                      <input type="hidden" name="day" value="3">
+                    </b-form>
                   </div>
                 </b-tab>
 
@@ -177,9 +265,28 @@
                   <div class="list-group list-group-flush">
                     {% for x in sheet %}
                       {% if x.day == 5 %}
-                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% if user.client in moderators %} 
+                          <b-form
+                            method="POST"
+                            action="{% url 'set_sheet' x.id %}">
+                            <b-form-input size="sm" name="discipline" class="list-group-item list-group-item-action small" value="{{ x.discipline }}">  </b-form-input>
+                          </b-form>
+                        {% else %}
+                          <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% endif %}
                       {% endif %}
                     {% endfor %}
+                    <b-form
+                      method="POST"
+                      action="{% url 'add_sheet' group.id %}">
+                      <b-form-input 
+                        name="discipline" 
+                        placeholder="Добавить предмет" 
+                        size="sm"
+                        class="list-group-item list-group-item-action small mt-2">
+                      </b-form-input>
+                      <input type="hidden" name="day" value="4">
+                    </b-form>
                   </div>
                 </b-tab>
 
@@ -187,9 +294,28 @@
                   <div class="list-group list-group-flush">
                     {% for x in sheet %}
                       {% if x.day == 5 %}
-                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% if user.client in moderators %} 
+                          <b-form
+                            method="POST"
+                            action="{% url 'set_sheet' x.id %}">
+                            <b-form-input size="sm" name="discipline" class="list-group-item list-group-item-action small" value="{{ x.discipline }}">  </b-form-input>
+                          </b-form>
+                        {% else %}
+                          <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% endif %}
                       {% endif %}
                     {% endfor %}
+                    <b-form
+                      method="POST"
+                      action="{% url 'add_sheet' group.id %}">
+                      <b-form-input 
+                        name="discipline" 
+                        placeholder="Добавить предмет" 
+                        size="sm"
+                        class="list-group-item list-group-item-action small mt-2">
+                      </b-form-input>
+                      <input type="hidden" name="day" value="5">
+                    </b-form>
                   </div>
                 </b-tab>
 
@@ -197,9 +323,28 @@
                   <div class="list-group list-group-flush">
                     {% for x in sheet %}
                       {% if x.day == 6 %}
-                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% if user.client in moderators %} 
+                          <b-form
+                            method="POST"
+                            action="{% url 'set_sheet' x.id %}">
+                            <b-form-input size="sm" name="discipline" class="list-group-item list-group-item-action small" value="{{ x.discipline }}">  </b-form-input>
+                          </b-form>
+                        {% else %}
+                          <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% endif %}
                       {% endif %}
                     {% endfor %}
+                    <b-form
+                      method="POST"
+                      action="{% url 'add_sheet' group.id %}">
+                      <b-form-input 
+                        name="discipline" 
+                        placeholder="Добавить предмет" 
+                        size="sm"
+                        class="list-group-item list-group-item-action small mt-2">
+                      </b-form-input>
+                      <input type="hidden" name="day" value="6">
+                    </b-form>
                   </div>
                 </b-tab>
 
@@ -207,9 +352,28 @@
                   <div class="list-group list-group-flush">
                     {% for x in sheet %}
                       {% if x.day == 7 %}
-                        <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% if user.client in moderators %} 
+                          <b-form
+                            method="POST"
+                            action="{% url 'set_sheet' x.id %}">
+                            <b-form-input size="sm" name="discipline" class="list-group-item list-group-item-action small" value="{{ x.discipline }}">  </b-form-input>
+                          </b-form>
+                        {% else %}
+                          <a class="list-group-item list-group-item-action small"> {{ x.discipline }} </a>
+                        {% endif %}
                       {% endif %}
                     {% endfor %}
+                    <b-form
+                      method="POST"
+                      action="{% url 'add_sheet' group.id %}">
+                      <b-form-input 
+                        name="discipline" 
+                        placeholder="Добавить предмет" 
+                        size="sm"
+                        class="list-group-item list-group-item-action small mt-2">
+                      </b-form-input>
+                      <input type="hidden" name="day" value="7">
+                    </b-form>
                   </div>
                 </b-tab>
               </b-tabs>

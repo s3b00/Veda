@@ -265,7 +265,55 @@ def create_group(request):
                 name = discipline
             )
 
-        return HttpResponseRedirect(reverse('create_group'))
+        return HttpResponseRedirect(reverse('group', args=[group.id]))
+
+
+@login_required
+def set_lesson(request, pk):
+    """ Вью для обновления значения урока в расписании """
+
+    if request.method == "POST":
+        lesson = get_object_or_404(Lesson, pk=pk)
+
+        new_value = request.POST.get('discipline')
+
+        if len(new_value) > 0:
+            lesson.discipline = new_value
+            lesson.save()
+        else:
+            lesson.delete()
+
+        return HttpResponseRedirect(reverse('group', args=[lesson.group.id]))
+
+
+@login_required
+def add_lesson(request, pk):
+    """ Вью для добавления урока в расписание, рк - ключ группы, остальное -- в запрсое """
+
+    if request.method == "POST":
+        group = get_object_or_404(Group, pk=pk)
+
+        lesson = Lesson.objects.create(
+            group = group,
+            day = request.POST.get('day'),
+            discipline = request.POST.get('discipline')
+        )
+
+        for moderator in group.moderators.all():
+            notification = Notification.objects.create(
+                receiver = moderator,
+                message = f"В группе {group.name} обновлено расписание!",
+                priority = 4
+            )
+
+        for listener in group.listeners.all():
+            notification = Notification.objects.create(
+                receiver = listener,
+                message = f"В группе {group.name} обновлено расписание!",
+                priority = 4
+            )
+
+        return HttpResponseRedirect(reverse('group', args=[group.id]))
 
 
 def group_enter(request, pk):
@@ -357,7 +405,44 @@ def group_search(request):
         group = get_object_or_404(Group, tag=request.GET.get('tag'))
 
         return HttpResponseRedirect(reverse('group', args=[group.id]))
-        
+
+
+@login_required
+def update_status_group(request, pk):
+    """ Вью для обновления статуса между модератором и слушателем в группе """
+
+    if request.method == "POST":
+        group = get_object_or_404(Group, pk=pk)
+
+        client = get_object_or_404(Client, pk=request.POST.get('user'))
+
+        if client in group.moderators.all():
+            group.moderators.remove(client)
+            group.listeners.add(client)
+        elif client in group.listeners.all():
+            group.listeners.remove(client)
+            group.moderators.add(client)
+
+        group.save()
+
+        return HttpResponseRedirect(reverse('group', args=[pk]))
+
+
+@login_required
+def kick_user(request, pk):
+    """ Вью для обновления статуса между модератором и слушателем в группе """
+
+    if request.method == "POST":
+        group = get_object_or_404(Group, pk=pk)
+
+        client = get_object_or_404(Client, pk=request.POST.get('user'))
+
+        if client in group.listeners.all():
+            group.listeners.remove(client)
+
+        group.save()
+
+        return HttpResponseRedirect(reverse('group', args=[pk]))
 
 
 def faq(request):

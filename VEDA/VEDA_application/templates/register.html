@@ -114,14 +114,14 @@
         </b-form-input-group>
        
 
-        <b-form-datepicker
+        <b-form-input
           type="date"
           v-model="form.day_of_birthday"
           name="dob"
           :state="validate_dob"
           placeholder="Дата рождения"
           class="mt-2">
-        </b-form-datepicker>
+        </b-form-input>
         
         <div class="row d-flex justify-content-around mt-4">
           <b-button type="submit" pill variant="primary" size="sm" class="col-12 col-md-3 mr-4 mb-2 success-button">Создать аккаунт</b-button>
