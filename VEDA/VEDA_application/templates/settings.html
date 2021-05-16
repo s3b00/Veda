@@ -17,8 +17,9 @@
               label-for="name-input">
               <b-form-input
                 id="name-input"
-                v-model="personalForm.name"></b-form-input>
-            </b-form-group>
+                v-model="personalForm.name"
+                value="{{ user.first_name}}"
+                ></b-form-input>
 
             <b-form-group 
               label="Ваша фамилия"

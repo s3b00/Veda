@@ -62,9 +62,13 @@
         {% if user.is_authenticated %}
           <b-col cols="12" md=5 lg=3 class="p-0">
             {% if user.is_authenticated %}
-            <b-form class="mt-5">
+            <b-form 
+              class="mt-5"
+              method="GET"
+              action="{% url 'group_search' %}">
               <b-form-input
                 type="text"
+                name="tag"
                 placeholder="Поиск"></b-form-input>
             </b-form>
             <div class="card card-outline-secondary mt-2">

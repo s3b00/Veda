@@ -53,6 +53,7 @@ let index = new Vue({
   data: {
     article: '',
     content: '',
+    search: '',
     articleValid: null,
     contentValid: null,
     personalNotifications: true,

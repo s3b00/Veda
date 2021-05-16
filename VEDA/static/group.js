@@ -77,7 +77,7 @@ let group = new Vue({
         },
         validateUser() {
             if (this.taskForm.isSubmited) {
-                return this.taskForm.user
+                return !!this.taskForm.user
             } else {
                 return null
             }

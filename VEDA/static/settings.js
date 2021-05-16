@@ -4,12 +4,13 @@ let settings = new Vue({
   data: {
     tabIndex: 0,
     personalForm: {
-      name: '',
+      name: null,
       surname: '',
       dob: '',
       hobbies: '',
       address: '',
       avatar: '',
+      gender: null,
     },
     selected: [],
     notificationsForm: [

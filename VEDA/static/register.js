@@ -60,8 +60,7 @@ var registration = new Vue({
     },
     validate_gender() {
       if (!this.isSubmited) return null
-      alert(this.form.gender)
-      console.log(!!(this.form.gender === "F" | this.form.gender === "M" | this.form.gender === "O"));
+      
       return !!(this.form.gender === "F" | this.form.gender === "M" | this.form.gender === "O")
     },
     validate_dob() {

@@ -1,21 +1,19 @@
-from django.core.checks import messages
 from django.dispatch.dispatcher import receiver
+
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
-from . import models
+
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
+
 from django.urls import reverse
+
+from . import models
 from VEDA_application.models import Admin_post, Client, Discipline, Group, Group_post, Lesson, Note, Notice, Notification, Task
 
 import json
 
 from datetime import datetime
-
-def template(request):
-    return render(request, 'main_template.html', context={
-        'groups': models.Group.objects.all()
-    })
 
 
 def index(request):
@@ -24,7 +22,7 @@ def index(request):
 
     if request.method == 'GET':
         return render(request, 'index.html', context={
-            'admin_posts': models.Admin_post.objects.all(),
+            'admin_posts': models.Admin_post.objects.all(), # посты от администратора
             'l_groups': models.Group.objects.filter(listeners__user__username=request.user.username),                     # группы, где есть текущий пользователь
             'm_groups': models.Group.objects.filter(moderators__user__username=request.user.username),                     # группы, где есть текущий пользователь
             'group_posts_listener': models.Group_post.objects.filter(group__listeners__user__username=request.user.username),    # посты в группах, в которых находится пользователь
@@ -90,8 +88,8 @@ def register(request):
             if user is not None:
                 login(request, user)
                 return HttpResponseRedirect(reverse('index'))
+
         except Exception as e:
-            print(e)
             return render(request, 'register.html', context={
                 'error': e
             })
@@ -350,6 +348,16 @@ def group_post(request, pk):
         
         return HttpResponseRedirect(reverse('group', args=[pk]))
 
+
+@login_required
+def group_search(request):
+    """ Вью для поиска группы по идентификтору из буков """
+
+    if request.method == "GET":
+        group = get_object_or_404(Group, tag=request.GET.get('tag'))
+
+        return HttpResponseRedirect(reverse('group', args=[group.id]))
+        
 
 
 def faq(request):
