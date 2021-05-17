@@ -151,43 +151,93 @@
                   </b-collapse>
 
                   <a href="#notification-collapse" @click.prevent v-b-toggle class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                    Уведомления  {% if notifications %} <b-badge class="text-light bg-dark"> ! </b-badge> {% endif %}
+                    Уведомления  {% if notifications %} <b-badge class="text-light bg-dark"> {{ notifications|length }} </b-badge> {% endif %}
                   </a>
                   <b-collapse id="notification-collapse">
                     {% for notification in notifications %}
                       {% if notification.priority == 1 %}
-                        <b-notification 
-                          v-if="personalNotifications" 
-                          id="{{ notification.id }}" 
-                          message="{{ notification.message }}" />
+                        <b-card 
+                        v-if="personalNotifications" 
+                        class="mt-2">
+                          <div class="d-flex justify-content-between align-items-center small">
+                            <span> {{ notification.message }} </span> 
+                            <b-form
+                              method="POST"
+                              action="{% url 'remove_notification' notification.id %}">
+                              <b-button variant="link" class="text-dark" size="sm" type="submit">
+                                <b-icon-x-circle scale="0.8"></b-icon-x-circle>
+                              </b-button>
+                            </b-form>
+                          </div>
+                        </b-card>
                       {% endif %}
 
                       {% if notification.priority == 2 %}
-                        <b-notification 
-                          v-if="systemNotifications" 
-                          id="{{ notification.id }}" 
-                          message="{{ notification.message }}" />
+                        <b-card 
+                          class="mt-2"
+                          v-if="systemNotifications">
+                          <div class="d-flex justify-content-between align-items-center small">
+                            <span> {{ notification.message }} </span> 
+                            <b-form
+                              method="POST"
+                              action="{% url 'remove_notification' notification.id %}">
+                              <b-button variant="link" class="text-dark" size="sm" type="submit">
+                                <b-icon-x-circle scale="0.8"></b-icon-x-circle>
+                              </b-button>
+                            </b-form>
+                          </div>
+                        </b-card>
                       {% endif %}
 
                       {% if notification.priority == 3 %}
-                        <b-notification 
-                          v-if="groupTasksNotifications" 
-                          id="{{ notification.id }}" 
-                          message="{{ notification.message }}" />
+                        <b-card 
+                          class="mt-2"
+                          v-if="groupTasksNotifications" >
+                          <div class="d-flex justify-content-between align-items-center small">
+                            <span> {{ notification.message }} </span> 
+                            <b-form
+                              method="POST"
+                              action="{% url 'remove_notification' notification.id %}">
+                              <b-button variant="link" class="text-dark" size="sm" type="submit">
+                                <b-icon-x-circle scale="0.8"></b-icon-x-circle>
+                              </b-button>
+                            </b-form>
+                          </div>
+                        </b-card>
                       {% endif %}
 
                       {% if notification.priority == 4 %}
-                        <b-notification 
+                        <b-card 
                           v-if="groupPostsNotifications" 
-                          id="{{ notification.id }}" 
-                          message="{{ notification.message }}" />
+                          class="mt-2">
+                          <div class="d-flex justify-content-between align-items-center small">
+                            <span> {{ notification.message }} </span> 
+                            <b-form
+                              method="POST"
+                              action="{% url 'remove_notification' notification.id %}">
+                              <b-button variant="link" class="text-dark" size="sm" type="submit">
+                                <b-icon-x-circle scale="0.8"></b-icon-x-circle>
+                              </b-button>
+                            </b-form>
+                          </div>
+                        </b-card>
                       {% endif %}
 
                       {% if notification.priority == 5 %}
-                        <b-notification 
+                        <b-card 
                           v-if="adminPostsNotifications" 
-                          id="{{ notification.id }}" 
-                          message="{{ notification.message }}" />
+                          class="mt-2">
+                          <div class="d-flex justify-content-between align-items-center small">
+                            <span> {{ notification.message }} </span> 
+                            <b-form
+                              method="POST"
+                              action="{% url 'remove_notification' notification.id %}">
+                              <b-button variant="link" class="text-dark" size="sm" type="submit">
+                                <b-icon-x-circle scale="0.8"></b-icon-x-circle>
+                              </b-button>
+                            </b-form>
+                          </div>
+                        </b-card>
                       {% endif %}
                     {% endfor %}
                   </b-collapse>

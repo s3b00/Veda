@@ -48,6 +48,11 @@ class Client(models.Model):
     hobbies = models.CharField(max_length=100)            # Поле хобби (используется куратором и отображается в профиле)
     day_of_birthday = models.DateField(null=True)         # Поле дня рождения (используется куратором и отображается в профиле)
     adress = models.CharField(max_length=50)              # Поле адреса (используется только куратором и не виден в профиле)
+
+    #socials
+    vk = models.TextField(blank=True)
+    instagram = models.TextField(blank=True)
+
     gender = models.CharField(choices=(
         ('M', 'Male'),
         ('F', 'Female'),
@@ -95,6 +100,9 @@ class Notification(models.Model):
         4. Посты группы (новый пост)
         5. Посты админов (обновления разработчиков в блоге)
     """
+
+    class Meta:
+        ordering = ['-id']
 
 
 class Group(models.Model):

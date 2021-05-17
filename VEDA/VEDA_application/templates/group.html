@@ -189,6 +189,7 @@
                         {% endif %}
                       {% endif %}
                     {% endfor %}
+                    {% if user.client in moderators %} 
                     <b-form
                       method="POST"
                       action="{% url 'add_sheet' group.id %}">
@@ -200,6 +201,7 @@
                       </b-form-input>
                       <input type="hidden" name="day" value="1">
                     </b-form>
+                    {% endif %}
                   </div>
                 </b-tab>
 
@@ -218,6 +220,7 @@
                         {% endif %}
                       {% endif %}
                     {% endfor %}
+                    {% if user.client in moderators %} 
                     <b-form
                       method="POST"
                       action="{% url 'add_sheet' group.id %}">
@@ -229,6 +232,7 @@
                       </b-form-input>
                       <input type="hidden" name="day" value="2">
                     </b-form>
+                    {% endif %}
                   </div>
                 </b-tab>
 
@@ -247,6 +251,7 @@
                         {% endif %}
                       {% endif %}
                     {% endfor %}
+                    {% if user.client in moderators %} 
                     <b-form
                       method="POST"
                       action="{% url 'add_sheet' group.id %}">
@@ -258,6 +263,7 @@
                       </b-form-input>
                       <input type="hidden" name="day" value="3">
                     </b-form>
+                    {% endif %}
                   </div>
                 </b-tab>
 
@@ -276,17 +282,20 @@
                         {% endif %}
                       {% endif %}
                     {% endfor %}
-                    <b-form
+                    {% if user.client in moderators %} 
+                      <b-form
                       method="POST"
                       action="{% url 'add_sheet' group.id %}">
-                      <b-form-input 
-                        name="discipline" 
-                        placeholder="Добавить предмет" 
-                        size="sm"
-                        class="list-group-item list-group-item-action small mt-2">
-                      </b-form-input>
-                      <input type="hidden" name="day" value="4">
-                    </b-form>
+                        <b-form-input 
+                          name="discipline" 
+                          placeholder="Добавить предмет" 
+                          size="sm"
+                          class="list-group-item list-group-item-action small mt-2">
+                        </b-form-input>
+                        <input type="hidden" name="day" value="4">
+                      </b-form>
+                    {% endif %}
+                   
                   </div>
                 </b-tab>
 
@@ -305,6 +314,7 @@
                         {% endif %}
                       {% endif %}
                     {% endfor %}
+                    {% if user.client in moderators %} 
                     <b-form
                       method="POST"
                       action="{% url 'add_sheet' group.id %}">
@@ -316,6 +326,7 @@
                       </b-form-input>
                       <input type="hidden" name="day" value="5">
                     </b-form>
+                    {% endif %}
                   </div>
                 </b-tab>
 
@@ -334,6 +345,7 @@
                         {% endif %}
                       {% endif %}
                     {% endfor %}
+                    {% if user.client in moderators %} 
                     <b-form
                       method="POST"
                       action="{% url 'add_sheet' group.id %}">
@@ -345,6 +357,7 @@
                       </b-form-input>
                       <input type="hidden" name="day" value="6">
                     </b-form>
+                    {% endif %} 
                   </div>
                 </b-tab>
 
@@ -363,6 +376,7 @@
                         {% endif %}
                       {% endif %}
                     {% endfor %}
+                    {% if user.client in moderators %} 
                     <b-form
                       method="POST"
                       action="{% url 'add_sheet' group.id %}">
@@ -374,6 +388,7 @@
                       </b-form-input>
                       <input type="hidden" name="day" value="7">
                     </b-form>
+                    {% endif %}
                   </div>
                 </b-tab>
               </b-tabs>

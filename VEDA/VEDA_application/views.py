@@ -77,9 +77,9 @@ def register(request):
                 last_name=request.POST.get('secondname'), 
                 password=request.POST.get('password'))
                 
-            user.client.hobbies = request.POST.get('hobbies')
+            # user.client.adress = request.POST.get('address')
+            # user.client.hobbies = request.POST.get('hobbies')
             user.client.day_of_birthday = request.POST.get('dob')
-            user.client.adress = request.POST.get('address')
             user.client.gender = request.POST.get('gender')
             user.client.status = ""
 
@@ -461,6 +461,52 @@ def settings(request):
         return render(request, 'settings.html', context={
 
         })
+
+
+def update_user(request, pk):
+    """ Вью для обновления настроек и личной информации пользователя """
+
+    if request.method == "POST":
+        user = get_object_or_404(User, pk=pk)
+
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+
+        user.client.status = request.POST.get('status')
+        user.client.hobbies = request.POST.get('hobbies')
+        user.client.adress = request.POST.get('adress')
+
+        user.client.vk = request.POST.get('vk')
+        user.client.instagram = request.POST.get('instagram')
+
+        user.save()
+
+        return HttpResponseRedirect(reverse('settings'))
+
+
+@login_required
+def update_password(request, pk):
+    """ Вью для изменения пароля пользователя """
+
+    if request.method == "POST":
+        user = get_object_or_404(User, pk=pk)
+
+        if (user.check_password(request.POST.get('password'))):
+            user.set_password(request.POST.get('new_password'))
+            user.save()
+
+            user = authenticate(username=user.username, password=request.POST.get('new_password'))
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect(reverse('settings'))
+            else:
+                return render(request, 'login.html', context={
+                    'error': True
+            })
+        else:
+            return render(request, 'settings.html', context={
+                'password_error': True
+            })  
 
 
 def recover(request):

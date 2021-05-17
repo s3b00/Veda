@@ -20,6 +20,14 @@
         <p>Хобби: {{ client.hobbies }}</p>
         <p>Дата рождения: {{ client.day_of_birthday }}</p>
         <p>Адрес проживания: {{ client.adress }}</p>
+
+        {% if client.vk %}
+          <p>VK: <a href="{{ client.vk }}">{{ client.vk }}</a></p>
+        {% endif %}
+
+        {% if client.instagam %}
+          <p>Instagram: <a href="{{ client.instagram }}">{{ client.instagram }}</a></p>
+        {% endif %}
       </b-col>
       <div class="card card-outline-secondary mt-5">
         <div class="card-header bg-dark text-light">

@@ -41,7 +41,7 @@ var registration = new Vue({
     validate_username() {
       if (!this.isSubmited) return null
 
-      return this.form.username.length > 4 
+      return this.form.username.length > 3
     },
     validate_name() {
       if (!this.isSubmited) return null
@@ -51,7 +51,7 @@ var registration = new Vue({
     validate_password() {
       if (!this.isSubmited) return null
 
-      return this.form.password.length > 8
+      return this.form.password.length > 7
     },
     validate_repeat_password() {
       if (!this.isSubmited) return null

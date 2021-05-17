@@ -11,51 +11,114 @@
     <b-card no-body>
       <b-tabs pills v-model="tabIndex" card vertical justified content-class="mt-3">
         <b-tab title="Личные данные" active :title-link-class="linkClass(0)"><b-card-text>
-          <b-form class="mt-3">
-            <b-form-group 
-              label="Ваше имя"
-              label-for="name-input">
-              <b-form-input
-                id="name-input"
-                v-model="personalForm.name"
-                value="{{ user.first_name}}"
-                ></b-form-input>
-
-            <b-form-group 
-              label="Ваша фамилия"
-              label-for="surname-input"
-              class="mt-3">
-              <b-form-input
-                id="surname-input"
-                v-model="personalForm.surname"></b-form-input>
+          <b-form 
+            method="POST"
+            action="{% url 'update_user' user.id %}"
+            class="mt-3">
+            <b-form-group
+              label="Имя"
+              labelfor="nameInput"
+              class="mb-2">
+              <b-form-input-group>
+                <b-form-input
+                  id="nameInput"
+                  placeholder="Имя"
+                  value="{{ user.first_name }}"
+                  name="first_name">
+                </b-form-input>
+              </b-form-input-group>
             </b-form-group>
 
-            <b-form-group 
-              label="Дата рождения"
-              label-for="dob-input"
-              class="mt-3">
-              <b-form-input
-                id="dob-input"
-                v-model="personalForm.dob"></b-form-input>
+            <b-form-group
+              label="Фамилия"
+              labelfor="secondnameInput"
+              class="mb-4">
+              <b-form-input-group>
+                <b-form-input
+                  id="secondnameInput"
+                  placeholder="Фамилия"
+                  name="last_name"
+                  value="{{ user.last_name }}">
+                </b-form-input>
+              </b-form-input-group>
             </b-form-group>
 
-            <b-form-group 
+           
+            <b-form-group
+              label="Статус"
+              label-for="statusInput"
+              class="mb-4">
+              <b-form-input-group>
+                <b-form-input
+                  id="statusInput"
+                  placeholder="Статус"
+                  name="status"
+                  value="{{ user.client.status }}">
+                </b-form-input>
+              </b-form-input-group>
+            </b-form-group>
+
+            <b-form-group
               label="Хобби"
-              label-for="hobbies-input"
-              class="mt-3">
-              <b-form-input
-                id="hobbies-input"
-                v-model="personalForm.hobbies"></b-form-input>
+              label-for="hobbiesInput"
+              class="mb-2">
+              <b-form-input-group>
+                <b-form-input
+                  id="hobbiesInput"
+                  placeholder="Хобби"
+                  name="hobbies"
+                  value="{{ user.client.hobbies }}">
+                </b-form-input>
+              </b-form-input-group>
             </b-form-group>
 
-            <b-form-group 
+            <b-form-group
               label="Адрес"
-              label-for="address-input"
-              class="mt-3">
-              <b-form-input
-                id="address-input"
-                v-model="personalForm.address"></b-form-input>
+              label-for="adressInput"
+              class="mb-4">
+              <b-form-input-group>
+                <b-form-input
+                  id="adressInput"
+                  placeholder="Адрес"
+                  name="adress"
+                  value="{{ user.client.adress }}">
+                </b-form-input>
+              </b-form-input-group>
             </b-form-group>
+
+            <b-form-group
+              label="VK"
+              label-for="vkInput"
+              class="mb-2">
+              <b-form-input-group>
+                <b-form-input
+                  placeholder="VK"
+                  name="vk"
+                  value="{{ user.client.vk }}">
+                </b-form-input>
+              </b-form-input-group>  
+            </b-form-group>
+
+            <b-form-group
+              label="Instagram"
+              label-for="instagramInput"
+              class="mb-4">
+              <b-form-input
+                  placeholder="Instagram"
+                  value="{{ user.client.intagram }}"
+                  name="instagram">
+              </b-form-input>
+            </b-form-group>
+
+            <!-- <b-form-group
+            label="Фотография на странице профиля"
+            label-for="userpicInput"
+            class="mb-4">
+            <b-form-file
+                name="userpic"
+                value="{{ user.client.userpic }}">
+            </b-form-file>
+          </b-form-group> -->
 
             <div class="d-flex justify-content-around align-items-center mt-4">
               <b-button type="submit" class="w-50" variant="dark">Сохранить изменения</b-button>
@@ -65,13 +128,24 @@
         </b-card-text></b-tab>
 
         <b-tab title="Конфиденциальность" :title-link-class="linkClass(1)"><b-card-text>
-          <b-form class="mt-3">
+          {% if password_error %} 
+            <b-alert variant="warning" show>Ошибка в смене пароля, проверьте правильность данных!</b-alert>
+          {% endif %}
+          <b-form 
+            class="mt-3"
+            method="POST"
+            @submit="passwordSubmit"
+            action="{% url 'update_password' user.id %}">
             <b-form-group 
               label="Ваш текущий пароль"
               label-for="password-input">
               <b-form-input
+                type="password"
                 id="password-input"
-                v-model="securityForm.password"></b-form-input>
+                name="password"
+                :state="validate_password"
+                v-model="passwordForm.currentPassword"></b-form-input>
+                <b-form-invalid-feedback :state="validate_password">Введите пароль, не менее 8 символов.</b-form-invalid-feedback>
             </b-form-group>
 
             <b-form-group 
@@ -79,8 +153,12 @@
               label-for="new_password-input"
               class="mt-3">
               <b-form-input
+                type="password"
                 id="new_password-input"
-                v-model="securityForm.new_password"></b-form-input>
+                name="new_password"
+                :state="validate_new_password"
+                v-model="passwordForm.newPassword"></b-form-input>
+                <b-form-invalid-feedback :state="validate_new_password">Введите новый пароль, не менее 8 символов.</b-form-invalid-feedback>
             </b-form-group>
 
             <b-form-group 
@@ -88,8 +166,11 @@
               label-for="new_password_retry-input"
               class="mt-3">
               <b-form-input
+                type="password"
                 id="new_password_retry-input"
-                v-model="securityForm.new_password_retry"></b-form-input>
+                :state="validate_new_password_repeat"
+                v-model="passwordForm.newPasswordRepeat"></b-form-input>
+              <b-form-invalid-feedback :state="validate_new_password_repeat">Пароли не одинаковы.</b-form-invalid-feedback>
             </b-form-group>
 
             <div class="d-flex justify-content-around align-items-center mt-4">
@@ -99,16 +180,8 @@
           </b-form>
         </b-card-text></b-tab>
 
-        <b-tab title="Уведомления" :title-link-class="linkClass(2)"><b-card-text>
-          <b-form-group
-            label="Настройки получения уведомления">
-            <b-form-checkbox-group
-              v-model="selected"
-              :options="notificationsForm"
-              name="notificationOption"
-              stacked
-            ></b-form-checkbox-group>
-          </b-form-group>
+        <b-tab title="Родители" :title-link-class="linkClass(2)"><b-card-text>
+          
           <div class="d-flex justify-content-around align-items-center mt-4">
             <b-button type="submit" class="w-50" variant="dark">Сохранить изменения</b-button>
             <b-button type="reset" class="bg-blue w-25">Сбросить</b-button>

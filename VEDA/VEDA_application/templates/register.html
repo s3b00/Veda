@@ -46,42 +46,48 @@
           <b-form-invalid-feedback :state="validate_username">Имя должно быть длиннее четырех знаков.</b-form-invalid-feedback>
         </b-form-input-group>
        
-        <b-form-input 
-            type="password" 
-            v-model="form.password" 
-            :state="validate_password"
-            name="password" 
-            placeholder="Пароль"
-            class="mt-2"></b-form-input>
-        <b-form-invalid-feedback :state="validate_password">Минимум 8 символов для пароля.</b-form-invalid-feedback>
+        <b-form-input-group>
+          <b-form-input 
+              type="password" 
+              v-model="form.password" 
+              :state="validate_password"
+              name="password" 
+              placeholder="Пароль"
+              class="mt-2"></b-form-input>
+          <b-form-invalid-feedback :state="validate_password">Минимум 8 символов для пароля.</b-form-invalid-feedback>
+        </b-form-input-group>
 
-        <b-form-input 
-            type="password" 
-            v-model="form.password_repeat" 
-            :state="validate_repeat_password"
-            placeholder="Подтверждение пароля"
-            class="mt-2"></b-form-input>
-        <b-form-invalid-feedback :state="validate_repeat_password">Пароли не совпадают.</b-form-invalid-feedback>
+        <b-form-input-group>
+          <b-form-input 
+              type="password" 
+              v-model="form.password_repeat" 
+              :state="validate_repeat_password"
+              placeholder="Подтверждение пароля"
+              class="mt-2"></b-form-input>
+          <b-form-invalid-feedback :state="validate_repeat_password">Пароли не совпадают.</b-form-invalid-feedback>
+        </b-form-input-group>
       
-        <p class="mt-4">Личная информация</p>
-        <b-form-input 
-            type="text"
-            v-model="form.firstname"
-            :state="validate_name"
-            name="firstname"
-            placeholder="Имя"
-            class="mt-2 col-12 col-md-5"></b-form-input>
-        
-        <b-form-input 
-            type="text"
-            v-model="form.secondname"
-            :state="validate_name"
-            name="secondname"
-            placeholder="Фамилия"
-            class="mt-2 col-12 col-md-7"></b-form-input>
-        <b-form-invalid-feedback :state="validate_name">Поля личных данных не заполнены.</b-form-invalid-feedback>
+        <b-form-input-group>
+          <p class="mt-4">Личная информация</p>
+          <b-form-input 
+              type="text"
+              v-model="form.firstname"
+              :state="validate_name"
+              name="firstname"
+              placeholder="Имя"
+              class="mt-2 col-12 col-md-5"></b-form-input>
+          
+          <b-form-input 
+              type="text"
+              v-model="form.secondname"
+              :state="validate_name"
+              name="secondname"
+              placeholder="Фамилия"
+              class="mt-2 col-12 col-md-7"></b-form-input>
+          <b-form-invalid-feedback :state="validate_name">Поля личных данных не заполнены.</b-form-invalid-feedback>
+        </b-form-input-group>
 
-        <b-form-input 
+        {% comment %} <b-form-input 
           type="text"
           v-model="form.hobbies"
           name="hobbies"
@@ -93,7 +99,7 @@
           v-model="form.address"
           name="address"
           placeholder="Адрес"
-          class="mt-2"></b-form-input>
+          class="mt-2"></b-form-input> {% endcomment %}
 
         <b-form-input-group>
           <b-form-select 
