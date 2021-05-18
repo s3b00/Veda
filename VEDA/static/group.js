@@ -19,6 +19,7 @@ let group = new Vue({
         },
         sheetModal: {
             stickyHeader: true,
+            noteAddValue: ''
         },
         modalShow: false,
         taskModalShow: false,

@@ -63,6 +63,10 @@ class Client(models.Model):
     def __str__(self):
             # format: s3boo
             return self.user.username
+    
+
+    class Meta:
+        ordering = ['user__last_name', 'user__first_name']
 
 
 # Два метода ниже - позволяет создавать клиента сразу, когда меняется пользователь (основа клиента)
@@ -179,6 +183,7 @@ class Note(models.Model):
     date_of_receive = models.DateField(blank=False, null=False) # дата оценки
     value = models.CharField(max_length=10, blank=True) # значение оценки (10, н-ка, неуд и т.п.)
     discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE, null=True) # предмет, по которому поставлена оценка
+    description = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         # format: s3boo 9

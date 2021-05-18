@@ -1,3 +1,4 @@
+from VEDA_application.templatetags.veda_extras import get_avg_user
 from django.dispatch.dispatcher import receiver
 
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
@@ -131,17 +132,40 @@ def group(request, pk):
     if request.method == "GET":
         group = get_object_or_404(models.Group, pk=pk)
 
+        listeners = group.listeners.all()
+        moderators = group.moderators.all()
+        notes = Note.objects.filter(group__id=group.id)
+
+        sorted_users = list(set(listeners | moderators))
+        sorted_users = sorted(sorted_users, key=lambda user: -get_avg_user(notes, user))
+        print(sorted_users)
+
         return render(request, 'group.html', context={
             'group': group,
-            'listeners': group.listeners.all(),
-            'moderators': group.moderators.all(),
+            'listeners': listeners,
+            'moderators': moderators,
+            'sorted_users': sorted_users,
             'notices': models.Notice.objects.filter(group__id=group.id),
             'tasks': models.Task.objects.filter(group__id=group.id),
             'posts': models.Group_post.objects.filter(group__id=group.id),
             'sheet': models.Lesson.objects.filter(group__id=group.id),
             'disciplines': models.Discipline.objects.filter(group__id=group.id),
             'days': range(1, 32),
-            'notes': Note.objects.filter(group__id=group.id)
+            'notes': notes,
+            'months': [
+                (1, 'Январь'),
+                (2, 'Февраль'),
+                (3, 'Март'),
+                (4, 'Апрель'),
+                (5, 'Май'),
+                (6, 'Июнь'),
+                (7, 'Июль'),
+                (8, 'Август'),
+                (9, 'Сентябрь'),
+                (10, 'Октябрь'),
+                (11, 'Ноябрь'),
+                (12, 'Декабрь'),
+            ],
         })
 
 
@@ -314,6 +338,31 @@ def add_lesson(request, pk):
             )
 
         return HttpResponseRedirect(reverse('group', args=[group.id]))
+
+
+def add_discipline(request, pk):
+    """ Вью для создания предмета для ведения ведомости """
+
+    if request.method == "POST":
+        group = get_object_or_404(Group, pk=pk)
+
+        discipline = Discipline.objects.create(
+            group = group,
+            name = request.POST.get('name')
+        )
+
+        return HttpResponseRedirect(reverse('group', args=[pk]))
+
+
+def remove_discipline(request, pk):
+    """ Вью для удаления предмета для ведения ведомости """
+
+    if request.method == "POST":
+        discipline = get_object_or_404(Discipline, pk=pk)
+
+        discipline.delete()
+
+        return HttpResponseRedirect(reverse('group', args=[discipline.group.id]))
 
 
 def group_enter(request, pk):
@@ -518,6 +567,53 @@ def recover(request):
         })
 
 
+def add_note(request, pk_group, pk_user):
+    """ Вью для добавления оценки в группу """
+
+    if request.method == "POST":
+        group = get_object_or_404(Group, pk=pk_group)
+        receiver = get_object_or_404(Client, pk=pk_user)
+
+        date_of_create = request.POST.get('date')
+        discipline = get_object_or_404(Discipline, pk=request.POST.get('discipline')) 
+        value = request.POST.get('value')
+
+        description = request.POST.get('description')
+
+        note = Note.objects.create(
+            group = group,
+            receiver = receiver,
+            date_of_receive = date_of_create,
+            value = value,
+            discipline = discipline,
+            description = description
+        )
+
+        notification = Notification.objects.create(
+            receiver = receiver,
+            message = f'Вы получили оценку {note.value} в группе {group.name}',
+            priority = 1
+        )
+
+        print(receiver)
+        print(group)
+        print(pk_user)
+        print(pk_group)
+
+        return HttpResponseRedirect(reverse('group', args=[group.id]))
+
+
+def remove_note(request, pk):
+    """ Вью для удаления конкретной оценки """
+
+    if request.method == "POST":
+        note = get_object_or_404(Note, pk=pk)
+
+        note.delete()
+
+        return HttpResponseRedirect(reverse('group', args=[note.group.id]))
+
+
 @login_required
 def add_task(request, pk):
     """ Вью для добавления задачи пользователю в конкретной группе """
@@ -572,9 +668,10 @@ def remove_task(request, pk):
 def remove_notification(request, pk):
     """ Вьюшка для удаления уведомления """
 
-    if request.method == "GET":
+    if request.method == "POST":
         notification = get_object_or_404(Notification, pk=pk)
         notification.delete()
+
         return HttpResponseRedirect(reverse('index'))  
 
 
