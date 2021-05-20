@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
 from . import models
-from VEDA_application.models import Admin_post, Client, Discipline, Group, Group_post, Lesson, Note, Notice, Notification, Task
+from VEDA_application.models import Admin_post, Client, Discipline, Group, Group_post, Lesson, Note, Notice, Notification, Parent, Task
 
 import json
 
@@ -556,6 +556,72 @@ def update_password(request, pk):
             return render(request, 'settings.html', context={
                 'password_error': True
             })  
+
+
+def update_father(request):
+    """ Вью для изменения информации о отце """
+
+    if request.method == "POST":
+        try:
+            parent = request.user.client.father
+
+            parent.surname = request.POST.get('surname')
+            parent.name = request.POST.get('name')
+            parent.middlename = request.POST.get('middlename')
+            parent.job = request.POST.get('job')
+            parent.dob = request.POST.get('dob')
+            parent.phone = request.POST.get('phone')
+
+            parent.save()
+        except:
+            parent = Parent()
+
+            parent.surname = request.POST.get('surname')
+            parent.name = request.POST.get('name')
+            parent.middlename = request.POST.get('middlename')
+            parent.job = request.POST.get('job')
+            parent.dob = request.POST.get('dob')
+            parent.phone = request.POST.get('phone')
+
+            parent.save()
+
+            request.user.client.father = parent
+            request.user.save()
+
+        return HttpResponseRedirect(reverse('settings'))
+
+
+def update_mother(request):
+    """ Вью для изменения информации о отце """
+
+    if request.method == "POST":
+        try:
+            parent = request.user.client.mother
+
+            parent.surname = request.POST.get('surname')
+            parent.name = request.POST.get('name')
+            parent.middlename = request.POST.get('middlename')
+            parent.job = request.POST.get('job')
+            parent.dob = request.POST.get('dob')
+            parent.phone = request.POST.get('phone')
+
+            parent.save()
+        except:
+            parent = Parent()
+
+            parent.surname = request.POST.get('surname')
+            parent.name = request.POST.get('name')
+            parent.middlename = request.POST.get('middlename')
+            parent.job = request.POST.get('job')
+            parent.dob = request.POST.get('dob')
+            parent.phone = request.POST.get('phone')
+
+            parent.save()
+
+            request.user.client.mother = parent
+            request.user.save()
+
+        return HttpResponseRedirect(reverse('settings'))
 
 
 def recover(request):

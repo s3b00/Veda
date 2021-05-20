@@ -44,6 +44,7 @@
                     type="text" 
                     v-model="noticeManager.notice" 
                     class="inline" 
+                    maxlength="250"
                     name="message"
                     :state="noticeManager.noticeValid"
                     placeholder="Сообщите что-нибудь!"></b-form-input>
@@ -119,6 +120,7 @@
                 <b-form-input
                   type="text"
                   name="article"
+                  maxlength="50"
                   v-model="postForm.article"
                   :state="validateArticle"
                   placeholder="Заголовок для поста"></b-form-input>
@@ -580,6 +582,7 @@
                               <b-form-input-group>
                                 <b-form-input
                                   name="value"
+                                  maxlength=10
                                   size="sm"
                                   placeholder="Значение оценки"
                                   required>
@@ -587,6 +590,7 @@
                                 <b-form-input
                                   size="sm"
                                   name="description"
+                                  maxlength="100"
                                   class="mt-2"
                                   name="descrpiption"
                                   placeholder="Описание оценки (необязательно)">
@@ -660,6 +664,7 @@
                               <b-form-input-group>
                                 <b-form-input
                                   name="value"
+                                  maxlength="10"
                                   size="sm"
                                   placeholder="Значение оценки"
                                   required>
@@ -667,6 +672,7 @@
                                 <b-form-input
                                   size="sm"
                                   name="description"
+                                  maxlength="100"
                                   class="mt-2"
                                   name="descrpiption"
                                   placeholder="Описание оценки (необязательно)">

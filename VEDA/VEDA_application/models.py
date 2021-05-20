@@ -15,9 +15,9 @@ class Parent(models.Model):
     surname = models.CharField(max_length=30)       # Фамилия
     name = models.CharField(max_length=30)          # Имя
     middlename = models.CharField(max_length=30)    # Отчество
-    job = models.CharField(max_length=60)           # Место работы
-    date_of_birthday = models.DateField(null=True)  # Дата рождения
-    phone = models.CharField(max_length=20)         # Номер телефона
+    job = models.CharField(max_length=60, blank=True, null=True)           # Место работы
+    date_of_birthday = models.DateField(null=True, blank=True)  # Дата рождения
+    phone = models.CharField(max_length=20, blank=True, null=True)         # Номер телефона
 
 
 class Client(models.Model):

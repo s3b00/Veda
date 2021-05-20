@@ -22,6 +22,7 @@
               <b-form-input-group>
                 <b-form-input
                   id="nameInput"
+                  maxlength="100"
                   placeholder="Имя"
                   value="{{ user.first_name }}"
                   name="first_name">
@@ -31,6 +32,7 @@
 
             <b-form-group
               label="Фамилия"
+              maxlength="100"
               labelfor="secondnameInput"
               class="mb-4">
               <b-form-input-group>
@@ -50,6 +52,7 @@
               class="mb-4">
               <b-form-input-group>
                 <b-form-input
+                  maxlength="100"
                   id="statusInput"
                   placeholder="Статус"
                   name="status"
@@ -66,6 +69,7 @@
                 <b-form-input
                   id="hobbiesInput"
                   placeholder="Хобби"
+                  maxlength="100"
                   name="hobbies"
                   value="{{ user.client.hobbies }}">
                 </b-form-input>
@@ -81,6 +85,7 @@
                   id="adressInput"
                   placeholder="Адрес"
                   name="adress"
+                  maxlength="50"
                   value="{{ user.client.adress }}">
                 </b-form-input>
               </b-form-input-group>
@@ -109,16 +114,6 @@
                   name="instagram">
               </b-form-input>
             </b-form-group>
-
-            <!-- <b-form-group
-            label="Фотография на странице профиля"
-            label-for="userpicInput"
-            class="mb-4">
-            <b-form-file
-                name="userpic"
-                value="{{ user.client.userpic }}">
-            </b-form-file>
-          </b-form-group> -->
 
             <div class="d-flex justify-content-around align-items-center mt-4">
               <b-button type="submit" class="w-50" variant="dark">Сохранить изменения</b-button>
@@ -181,10 +176,156 @@
         </b-card-text></b-tab>
 
         <b-tab title="Родители" :title-link-class="linkClass(2)"><b-card-text>
-          
-          <div class="d-flex justify-content-around align-items-center mt-4">
-            <b-button type="submit" class="w-50" variant="dark">Сохранить изменения</b-button>
-            <b-button type="reset" class="bg-blue w-25">Сбросить</b-button>
+          <div class="d-flex flex-column align-items-center justify-content-around">
+            <b-card class="w-100 p-0">
+              <b-card-header class="mb-3">
+                Отец
+              </b-card-header>
+              <b-form
+                method="POST"
+                action="{% url 'update_father' %}">
+                <b-form-input
+                  type="text"
+                  value="{{ user.client.father.surname }}"
+                  placeholder="Фамилия"
+                  required
+                  class="mb-2"
+                  maxlength="30"
+                  name="surname"
+                ></b-form-input>
+
+                <b-form-input
+                  type="text"
+                  value="{{ user.client.father.name }}"
+                  placeholder="Имя"
+                  required
+                  class="mb-2"
+                  maxlength="30"
+                  name="name"
+                ></b-form-input>
+
+                <b-form-input
+                  type="text"
+                  value="{{ user.client.father.middlename }}"
+                  placeholder="Отчество"
+                  class="mb-2"
+                  required
+                  maxlength="30"
+                  name="middlename"
+                ></b-form-input>
+
+                <b-form-input
+                  type="text"
+                  value="{{ user.client.father.job }}"
+                  placeholder="Работа"
+                  maxlength="60"
+                  class="mb-2"
+                  name="job"
+                ></b-form-input>
+
+                <b-form-group
+                  label-for="father_dob"
+                  class="mb-2"
+                  label="Дата рождения">
+                  <b-form-input
+                    id="father_dob"
+                    type="date"
+                    value="{{ user.client.father.date_of_birthday|date:'Y-m-d' }}"
+                    name="dob"
+                  ></b-form-input>
+                </b-form-group>
+             
+                <b-form-input
+                  type="phone"
+                  value="{{ user.client.father.phone }}"
+                  class="mb-2 mt-2"
+                  placeholder="Телефон"
+                  maxlength="20"
+                  name="phone"
+                ></b-form-input>
+
+                <div class="d-flex justify-content-around align-items-center mt-4">
+                  <b-button type="submit" class="w-50" variant="dark">Сохранить изменения</b-button>
+                  <b-button type="reset" class="bg-blue w-25">Сбросить</b-button>
+                </div>
+              </b-form>
+            </b-card>
+          </div>
+
+          <div class="d-flex flex-column align-items-center justify-content-around">
+            <b-card class="w-100 p-0">
+              <b-card-header class="mb-3 mt-5">
+                Мать
+              </b-card-header>
+              <b-form
+                method="POST"
+                action="{% url 'update_mother' %}">
+                <b-form-input
+                  type="text"
+                  value="{{ user.client.mother.surname }}"
+                  placeholder="Фамилия"
+                  required
+                  class="mb-2"
+                  maxlength="30"
+                  name="surname"
+                ></b-form-input>
+
+                <b-form-input
+                  type="text"
+                  value="{{ user.client.mother.name }}"
+                  placeholder="Имя"
+                  required
+                  class="mb-2"
+                  maxlength="30"
+                  name="name"
+                ></b-form-input>
+
+                <b-form-input
+                  type="text"
+                  value="{{ user.client.mother.middlename }}"
+                  placeholder="Отчество"
+                  class="mb-2"
+                  required
+                  maxlength="30"
+                  name="middlename"
+                ></b-form-input>
+
+                <b-form-input
+                  type="text"
+                  value="{{ user.client.mother.job }}"
+                  placeholder="Работа"
+                  maxlength="60"
+                  class="mb-2"
+                  name="job"
+                ></b-form-input>
+
+                <b-form-group
+                  label-for="mother_dob"
+                  class="mb-2"
+                  label="Дата рождения">
+                  <b-form-input
+                    id="mother_dob"
+                    type="date"
+                    value="{{ user.client.mother.date_of_birthday|date:'Y-m-d' }}"
+                    name="dob"
+                  ></b-form-input>
+                </b-form-group>
+             
+                <b-form-input
+                  type="phone"
+                  value="{{ user.client.mother.phone }}"
+                  class="mb-2 mt-2"
+                  placeholder="Телефон"
+                  maxlength="20"
+                  name="phone"
+                ></b-form-input>
+
+                <div class="d-flex justify-content-around align-items-center mt-4">
+                  <b-button type="submit" class="w-50" variant="dark">Сохранить изменения</b-button>
+                  <b-button type="reset" class="bg-blue w-25">Сбросить</b-button>
+                </div>
+              </b-form>
+            </b-card>
           </div>
         </b-card-text></b-tab>
       </b-tabs>
