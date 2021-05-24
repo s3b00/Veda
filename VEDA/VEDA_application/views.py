@@ -424,10 +424,14 @@ def group_post(request, pk):
             author = request.user.client,
         )
 
-        if request.FILES['file']:
+        try:
             file = request.FILES['file']
-            group_post.file.save()
-            group_post.save()
+
+            if file:
+                group_post.file.save()
+                group_post.save()
+        except:
+            pass
 
         for listener in group.listeners.all():
             notification = Notification.objects.create(
@@ -749,6 +753,20 @@ def add_notice(request, pk):
         group = get_object_or_404(models.Group, pk=pk)
         notice = models.Notice(group=group, author=request.user.client, message=request.POST.get('message'))
         notice.save()
+
+        for listener in notice.group.listeners:
+            notification = Notification.objects.create(
+                receiver = listener,
+                message = f'Новое объявление в группе {group.name}',
+                priority = 4
+            )
+
+        for moderator in notice.group.moderators:
+            notification = Notification.objects.create(
+                receiver = moderator,
+                message = f'Новое объявление в группе {group.name}',
+                priority = 4
+            )
 
         return HttpResponseRedirect(reverse('group', args=[group.id]))  
 

@@ -241,7 +241,7 @@
                 <b-tab text="dark" title="Среда">
                   <div class="list-group list-group-flush">
                     {% for x in sheet %}
-                      {% if x.day == 4 %}
+                      {% if x.day == 3 %}
                         {% if user.client in moderators %} 
                           <b-form
                             method="POST"
@@ -272,7 +272,7 @@
                 <b-tab text="dark" title="Четверг">
                   <div class="list-group list-group-flush">
                     {% for x in sheet %}
-                      {% if x.day == 5 %}
+                      {% if x.day == 4 %}
                         {% if user.client in moderators %} 
                           <b-form
                             method="POST"
@@ -524,7 +524,7 @@
       <b-tabs content-class="mt-2">
         {% for in_number_month, month in months %}
           <b-tab title="{{ month }}">
-            <b-tabs>
+            <b-tabs small>
               {% for discipline in disciplines %}
                 <b-tab title="{{ discipline.name }}">
                   <b-row class="my-3">
@@ -549,8 +549,8 @@
                         <div class="d-flex justify-content-start align-items-center mb-1 overflow-x">
                           {% for note in notes %}
                             {% if note.discipline == discipline and note.receiver == student and note.date_of_receive.month == in_number_month %}
-                              <b-button id="target-note-{{ note.id }}" size="sm" pill variant="dark" class="mx-1">{{ note.value }}</b-button>
-                              <b-popover target="target-note-{{ note.id }}" triggers="focus">
+                              <b-button id="target-note-{{ note.id }}-{{ discipline.id }}-{{in_number_month}}" size="sm" pill variant="dark" class="mx-1">{{ note.value }}</b-button>
+                              <b-popover target="target-note-{{ note.id }}-{{ discipline.id }}-{{in_number_month}}" triggers="focus">
                                 <p class="small m-0">Дисциплина: {{ note.discipline.name }}</p>
                                 <p class="small m-0">Значение: {{ note.value }}</p>
                                 <p class="small m-0">Дата получения: {{ note.date_of_receive }}</p>
@@ -713,7 +713,7 @@
                   <div class="d-flex flex-column justify-content-around">
                     <p> Количество пропусков за месяц: {% get_count_n_month_discipline notes in_number_month discipline %}</p>
                     <p> Средний балл за месяц: {% get_avg_month_discipline notes in_number_month discipline %}</p>
-                    <p> Количество оценок ниже 4 месяц: {% get_count_neud_month_discipline notes in_number_month discipline %}</p>
+                    <p> Количество оценок ниже 4 за месяц: {% get_count_neud_month_discipline notes in_number_month discipline %}</p>
                   </div>
                 </b-tab>
               {% endfor %}

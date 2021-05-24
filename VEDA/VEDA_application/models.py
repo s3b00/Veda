@@ -34,20 +34,22 @@ class Client(models.Model):
         Parent, 
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         related_name='father'
     ) # Связь с родителем внешним ключем
 
     mother =  models.ForeignKey(
         Parent, 
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
         related_name='mother'
     ) # Связь с родителем внешним ключом
 
-    status = models.CharField(max_length=100)             # Поле статуса (отображается в профиле пользователя)
-    hobbies = models.CharField(max_length=100)            # Поле хобби (используется куратором и отображается в профиле)
+    status = models.CharField(max_length=100, blank=True, null=True)             # Поле статуса (отображается в профиле пользователя)
+    hobbies = models.CharField(max_length=100, blank=True, null=True)            # Поле хобби (используется куратором и отображается в профиле)
     day_of_birthday = models.DateField(null=True)         # Поле дня рождения (используется куратором и отображается в профиле)
-    adress = models.CharField(max_length=50)              # Поле адреса (используется только куратором и не виден в профиле)
+    adress = models.CharField(max_length=50, blank=True, null=True)              # Поле адреса (используется только куратором и не виден в профиле)
 
     #socials
     vk = models.TextField(blank=True)
@@ -214,7 +216,7 @@ class Group_post(models.Model):
     article = models.CharField(max_length=50)                   # Заголовок поста
     text = models.TextField()                                   # Сообщение поста, неограниченное количество знаков
     date_of_create = models.DateTimeField(auto_now_add=True)    # Дата и время публикации поста
-    file = models.FileField(null=True, upload_to='files'),      # Файл приложение к посту
+    file = models.FileField(null=True, blank=True, upload_to='files'),      # Файл приложение к посту
 
 
     def __str__(self):
