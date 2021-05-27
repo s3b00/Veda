@@ -18,7 +18,7 @@
             <div class="card-body overflow-auto" style="max-height: 200px;">
               <div class="list-group list-group-flush">
                 {% for notice in notices %}
-                  <a ref="#" 
+                  <a href="#" 
                     class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                     {{ notice.message }}
                     {% if user.client in moderators %}
@@ -35,19 +35,16 @@
               </div>
               {% if user.client in moderators %}
                 <b-form 
-                  @submit="addNotice" 
                   method="POST" 
                   class="mt-2"
                   action="{% url 'add_notice' group.id %}">
 
                   <b-form-input 
                     type="text" 
-                    v-model="noticeManager.notice" 
-                    class="inline" 
-                    maxlength="250"
                     name="message"
-                    :state="noticeManager.noticeValid"
-                    placeholder="Сообщите что-нибудь!"></b-form-input>
+                    placeholder="Сообщите что-нибудь!"
+                    maxlength="250"
+                    required></b-form-input>
                 </b-form>
               {% endif %}
             </div>
@@ -121,13 +118,11 @@
                   type="text"
                   name="article"
                   maxlength="50"
-                  v-model="postForm.article"
-                  :state="validateArticle"
+                  required
                   placeholder="Заголовок для поста"></b-form-input>
                 <b-form-textarea
                   name="text"
-                  v-model="postForm.text"
-                  :state="validateContent"
+                  required
                   placeholder="Текст под заголовок"
                   class="my-2"></b-form-textarea>
                 <div class="d-flex justify-content-between align-items-center">
@@ -155,7 +150,9 @@
               </div>
               <div class="card-body">
                 <p>{{ post.text }}</p> 
-                <a href="{{ post.file.url }}"> {{ post.file}}</a>
+                {% if post.post_file_field %}
+                  <a href="{{ post.post_file_field.url }}"> {{ post.post_file_field}}</a>
+                {% endif %}
                 <small class="text-muted">Опубликовано <a class="text-dark" href="{% url 'profile' post.author.id %}">{{ post.author }}</a>  {{ post.date_of_create }}</small>
               </div>
             </div>
@@ -521,6 +518,16 @@
     </b-row>
 
     <b-modal size="xl" v-model="modalShow" title="Ведомость группы">
+      <div class="d-flex justify-content-end align-items-center">
+        <b-form 
+          method="POST"
+          action="{% url 'get_results' group.id %}">
+          <span class="text-dark">Отправить ведомость на почту</span>
+          <b-button type="submit" variant="link" class="text-dark">
+            <b-icon icon="file-earmark-post"></b-icon>
+          </b-button>
+        </b-form>
+      </div>
       <b-tabs content-class="mt-2">
         {% for in_number_month, month in months %}
           <b-tab title="{{ month }}">

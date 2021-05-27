@@ -20,7 +20,7 @@
                   </div>
                   <div class="card-body">
                     <p>{{ post.text }}</p>
-                    <small class="text-muted">Опубликовано <a class="text-dark" href="#">{{ post.author }}</a>  {{ post.date_of_create }}</small>
+                    <small class="text-muted">Опубликовано <a class="text-dark" href="{% url 'profile' post.author.id %}">{{ post.author }}</a>  {{ post.date_of_create }}</small>
                   </div>
                 </div>
                 <hr>  
@@ -134,8 +134,15 @@
                   {% if user.is_staff %}
                     <a href="#" class="list-group-item list-group-item-action" v-b-modal.new-post>Новый пост</a>
                   {% endif %}
-                  <a href="#" class="list-group-item list-group-item-action">Моя ведомость</a>
+                  <a href="#" v-b-modal.my-notes class="list-group-item list-group-item-action">Моя ведомость</a>
+                  <b-modal
+                    id="my-notes"
+                    title="Моя ведомость">
+                    <p>Средний балл: {{ avg }}</p>
+                    <p>Количество пропусков: {{ count_n }}</p>
+                    <p>Количество оценок ниже 4: {{ count_less_than_4 }}</p>
 
+                  </b-modal>
                   <a href="#task-collapse" @click.prevent v-b-toggle class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                     Задачи {% if tasks %} <b-badge class="text-light bg-dark">{{ tasks|length }} </b-badge> {% endif %}
                   </a>

@@ -327,7 +327,27 @@
               </b-form>
             </b-card>
           </div>
-        </b-card-text></b-tab>
+        </b-card-text>
+      </b-tab>
+      <b-tab title="Персонализация" :title-link-class="linkClass(4)">
+        <b-form
+          action="{% url 'update_userpic' %}"
+          method="POST"
+          enctype="multipart/form-data">
+         <div class="custom-file">
+            <input type="file" 
+              id="file" 
+              name="file"
+              class="custom-file-input"
+              required>
+            <label class="custom-file-label" for="inputGroupFile04">Выберите новую аватарку</label>
+          </div>
+          <b-button 
+            type="submit"
+            class="w-100"
+            variant="dark">Отправить</b-button>
+        </b-form>
+      </b-tab>
       </b-tabs>
     </b-card>
   </div>

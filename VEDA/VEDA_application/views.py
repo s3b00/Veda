@@ -1,4 +1,4 @@
-from VEDA_application.templatetags.veda_extras import get_avg_user
+from VEDA_application.templatetags.veda_extras import get_avg_user, get_count_n, get_count_n_user
 from django.dispatch.dispatcher import receiver
 
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
@@ -6,6 +6,7 @@ from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail, EmailMessage
 
 from django.urls import reverse
 
@@ -13,6 +14,7 @@ from . import models
 from VEDA_application.models import Admin_post, Client, Discipline, Group, Group_post, Lesson, Note, Notice, Notification, Parent, Task
 
 import json
+import openpyxl
 
 from datetime import datetime
 
@@ -21,6 +23,23 @@ def index(request):
     """ Основная страница сайта, где расположены
         группы пользователя, их новости и блог разработчика """
 
+   
+    try:
+        notes = Note.objects.filter(receiver__id=request.user.client.id)
+        avg = get_avg_user(notes, request.user.client)
+        count_n = get_count_n_user(notes, request.user.client)
+        count_less_than_4 = 0
+        for note in notes:
+            try:
+                if int(note.value) < 4:
+                    count_less_than_4 += 1
+            except:
+                pass
+    except:
+        avg = 0
+        count_n = 0
+        count_less_than_4 = 4
+    
     if request.method == 'GET':
         return render(request, 'index.html', context={
             'admin_posts': models.Admin_post.objects.all(), # посты от администратора
@@ -29,7 +48,10 @@ def index(request):
             'group_posts_listener': models.Group_post.objects.filter(group__listeners__user__username=request.user.username),    # посты в группах, в которых находится пользователь
             'group_posts_moderator': models.Group_post.objects.filter(group__moderators__user__username=request.user.username),    # посты в группах, в которых находится пользователь
             'notifications': models.Notification.objects.filter(receiver__user__username=request.user.username),        # уведомления для пользователя
-            'tasks': models.Task.objects.filter(receiver__user__username=request.user.username)                         # задачи из группа для пользователя
+            'tasks': models.Task.objects.filter(receiver__user__username=request.user.username),                       # задачи из группа для пользователя
+            'avg': avg,
+            'count_n': count_n,
+            'count_less_than_4': count_less_than_4
         })
 
 
@@ -88,9 +110,14 @@ def register(request):
 
             if user is not None:
                 login(request, user)
-                return HttpResponseRedirect(reverse('index'))
 
+                send_mail('Регистрация', 
+                    f'Поздравляем, вы зарегистрировались на нашей платформе, ваш логин: {user.username}! Приятного использования!',
+                    'labark.group@gmail.com',
+                    [user.email])
+                return HttpResponseRedirect(reverse('index'))
         except Exception as e:
+            print(e)
             return render(request, 'register.html', context={
                 'error': e
             })
@@ -104,9 +131,15 @@ def profile(request, pk):
         client = get_object_or_404(models.Client, pk=pk)
         groups = models.Group.objects.filter(listeners__user__username=client.user.username)
 
+        parents_access = False
+        for group in groups:
+            if request.user.client in group.moderators.all():
+                parents_access = True
+
         return render(request, 'profile.html', context={
             'client': client,
-            'groups': groups
+            'groups': groups,
+            'parents_access': parents_access
         })
 
 
@@ -138,7 +171,6 @@ def group(request, pk):
 
         sorted_users = list(set(listeners | moderators))
         sorted_users = sorted(sorted_users, key=lambda user: -get_avg_user(notes, user))
-        print(sorted_users)
 
         return render(request, 'group.html', context={
             'group': group,
@@ -428,7 +460,7 @@ def group_post(request, pk):
             file = request.FILES['file']
 
             if file:
-                group_post.file.save()
+                group_post.post_file_field = file
                 group_post.save()
         except:
             pass
@@ -448,6 +480,83 @@ def group_post(request, pk):
             )
         
         return HttpResponseRedirect(reverse('group', args=[pk]))
+
+
+def get_results(request, pk):
+    """ Получение на почту ведомости группы """
+
+    if request.method == "POST":
+        group = get_object_or_404(Group, pk=pk)
+
+        wb = openpyxl.Workbook()
+        wb.create_sheet(title = 'Ведомость', index = 0)
+
+        sheet = wb['Ведомость']
+        max_count_notes = 0
+
+        notes = Note.objects.filter(group__id=group.id)
+        notes_dict = {}
+        for note in notes:
+            if note.receiver.id not in notes_dict.keys():
+                notes_dict[note.receiver.id] = []
+                notes_dict[note.receiver.id].append(note.value)
+            else:
+                notes_dict[note.receiver.id].append(note.value)
+        
+        cell = sheet.cell(1,1)
+        cell.value = f'Ведомость группы {group.name} за 12 месяцев'
+
+        iterator = 3
+        for key in notes_dict.keys():
+            receiver = get_object_or_404(Client, pk=key)
+
+            cell = sheet.cell(iterator, 1)
+            cell.value = receiver.user.first_name + " " + receiver.user.last_name
+
+            if max_count_notes < len(notes_dict[key]):
+                max_count_notes = len(notes_dict[key])
+
+            col_iterator = 2
+
+            for note in notes_dict[key]:
+                cell = sheet.cell(iterator, col_iterator)
+                cell.value = note
+                
+                col_iterator += 1
+            
+            iterator += 1
+
+        iterator = 3
+        col = max_count_notes + 2
+
+        cell = sheet.cell(iterator - 1, col)
+        cell.value = 'Средний балл'
+
+        cell = sheet.cell(iterator - 1, col + 1)
+        cell.value = 'Количество пропусков'
+
+        for key in notes_dict.keys():
+            cell = sheet.cell(iterator, col)
+            cell.value = get_avg_user(notes, get_object_or_404(Client, pk=key ))
+
+            cell = sheet.cell(iterator, col + 1)
+            cell.value = get_count_n_user(notes, get_object_or_404(Client, pk=key ))
+
+            iterator += 1
+
+        wb.save(f'Ведомость группы.xlsx')
+
+        mail = EmailMessage('Ваша ведомость группы!', 
+            "Мы собрали для вас ведомость группы в прикрепленном файле!", 
+            "labark.group@gmail.com",
+            [request.user.email])
+
+        with open('Ведомость группы.xlsx', 'rb') as report:
+            mail.attach('Ведомость группы.xlsx', report.read(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            res = mail.send()
+
+        return HttpResponseRedirect(reverse('group', args=[group.id]))
+
 
 
 @login_required
@@ -628,6 +737,23 @@ def update_mother(request):
         return HttpResponseRedirect(reverse('settings'))
 
 
+def update_userpic(request):
+    """ Вью для изменения аватарки пользователя """
+
+    if request.method == "POST":
+        # try:
+            user = request.user
+
+            user.client.userpic = request.FILES['file']
+            user.save()
+
+            return HttpResponseRedirect(reverse('settings'))
+        # except Exception as e:
+        #     print(e)
+            
+            return HttpResponseRedirect(reverse('index'))
+
+
 def recover(request):
     """ Страница восстановления пароля пользователя """
 
@@ -747,21 +873,21 @@ def remove_notification(request, pk):
 
 @login_required
 def add_notice(request, pk):
-    """ Вьюшка для удаления уведомления """
+    """ Вьюшка для добавления уведомления """
 
     if request.method == "POST":
         group = get_object_or_404(models.Group, pk=pk)
         notice = models.Notice(group=group, author=request.user.client, message=request.POST.get('message'))
         notice.save()
 
-        for listener in notice.group.listeners:
+        for listener in notice.group.listeners.all():
             notification = Notification.objects.create(
                 receiver = listener,
                 message = f'Новое объявление в группе {group.name}',
                 priority = 4
             )
 
-        for moderator in notice.group.moderators:
+        for moderator in notice.group.moderators.all():
             notification = Notification.objects.create(
                 receiver = moderator,
                 message = f'Новое объявление в группе {group.name}',

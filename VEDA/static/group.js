@@ -39,7 +39,6 @@ let group = new Vue({
 
             if (this.validateContent & this.validateArticle) {
 
-                alert(this.postForm.file)
                 return true
             } else {
 

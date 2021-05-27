@@ -28,6 +28,40 @@
         {% if client.instagam %}
           <p>Instagram: <a href="{{ client.instagram }}">{{ client.instagram }}</a></p>
         {% endif %}
+
+        <div class="d-flex justify-content-around align-items-center">
+          <b-button v-b-modal.father
+          class="w-25"
+          variant="dark">Отец</b-button>
+          <b-modal
+            id="father"
+            title="Отец">
+            {% if client.father %}
+              <p>ФИО: {{ client.father.surname }} {{ client.father.name }} {{ client.father.middlename }}</p>
+              <p>Место работы: {{ client.father.job }}</p>
+              <p>Дата рождения: {{ client.father.date_of_birthday }}</p>
+              <p>Телефон: {{ client.father.phone }}</p>
+            {% else %}
+              <h1>Информация не заполнена!</h1>
+            {% endif %}
+          </b-modal>
+
+          <b-button v-b-modal.mother
+          class="w-25"
+          variant="dark">Мать</b-button>
+          <b-modal
+          id="mother"
+          title="Мать">
+          {% if client.mother %}
+            <p>ФИО: {{ client.mother.surname }} {{ client.mother.name }} {{ client.mother.middlename }}</p>
+            <p>Место работы: {{ client.mother.job }}</p>
+            <p>Дата рождения: {{ client.mother.date_of_birthday }}</p>
+            <p>Телефон: {{ client.mother.phone }}</p>
+          {% else %}
+            <h1>Информация не заполнена!</h1>
+          {% endif %}
+        </b-modal>
+        </div>
       </b-col>
       <div class="card card-outline-secondary mt-5">
         <div class="card-header bg-dark text-light">
